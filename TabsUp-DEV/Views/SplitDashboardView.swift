@@ -131,11 +131,6 @@ struct SplitDashboardView: View {
                                 )
                                 .padding(.horizontal, 20)
                             } else {
-                                // Ensure people are initialized for weighted split
-                                if viewModel.people.isEmpty {
-                                    viewModel.resetPeople()
-                                }
-                                
                                 WeightedSplitResultCard(
                                     range: viewModel.weightedRange,
                                     currency: viewModel.selectedCurrency,
@@ -144,6 +139,12 @@ struct SplitDashboardView: View {
                                     }
                                 )
                                 .padding(.horizontal, 20)
+                                .onAppear {
+                                    // Ensure people are initialized for weighted split
+                                    if viewModel.people.isEmpty {
+                                        viewModel.resetPeople()
+                                    }
+                                }
                             }
                         }
                         
