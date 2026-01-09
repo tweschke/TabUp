@@ -1,14 +1,14 @@
 //
-//  TabsUp_DEVTests.swift
-//  TabsUp-DEVTests
+//  TabsUpTests.swift
+//  TabsUpTests
 //
 //  Created by Thomas Weschke on 09/01/2026.
 //
 
 import Testing
-@testable import TabsUp_DEV
+@testable import TabsUp
 
-struct TabsUp_DEVTests {
+struct TabsUpTests {
 
     @Test func example() async throws {
         // Write your test here and use APIs like `#expect(...)` to check expected conditions.

@@ -12,21 +12,21 @@
 			containerPortal = 476CB0712F111C26003E4755 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 476CB0782F111C26003E4755;
-			remoteInfo = "TabsUp-DEV";
+			remoteInfo = TabsUp;
 		};
 		476CB0912F111C27003E4755 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 476CB0712F111C26003E4755 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 476CB0782F111C26003E4755;
-			remoteInfo = "TabsUp-DEV";
+			remoteInfo = TabsUp;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		476CB0792F111C26003E4755 /* TabsUp-DEV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TabsUp-DEV.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		476CB0862F111C27003E4755 /* TabsUp-DEVTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TabsUp-DEVTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		476CB0902F111C27003E4755 /* TabsUp-DEVUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TabsUp-DEVUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		476CB0792F111C26003E4755 /* TabsUp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TabsUp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		476CB0862F111C27003E4755 /* TabsUpTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TabsUpTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		476CB0902F111C27003E4755 /* TabsUpUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TabsUpUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -35,14 +35,14 @@
 			path = "TabsUp-DEV";
 			sourceTree = "<group>";
 		};
-		476CB0892F111C27003E4755 /* TabsUp-DEVTests */ = {
+		476CB0892F111C27003E4755 /* TabsUpTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "TabsUp-DEVTests";
+			path = TabsUpTests;
 			sourceTree = "<group>";
 		};
-		476CB0932F111C27003E4755 /* TabsUp-DEVUITests */ = {
+		476CB0932F111C27003E4755 /* TabsUpUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "TabsUp-DEVUITests";
+			path = TabsUpUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -76,8 +76,8 @@
 			isa = PBXGroup;
 			children = (
 				476CB07B2F111C26003E4755 /* TabsUp-DEV */,
-				476CB0892F111C27003E4755 /* TabsUp-DEVTests */,
-				476CB0932F111C27003E4755 /* TabsUp-DEVUITests */,
+				476CB0892F111C27003E4755 /* TabsUpTests */,
+				476CB0932F111C27003E4755 /* TabsUpUITests */,
 				476CB07A2F111C26003E4755 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,9 +85,9 @@
 		476CB07A2F111C26003E4755 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				476CB0792F111C26003E4755 /* TabsUp-DEV.app */,
-				476CB0862F111C27003E4755 /* TabsUp-DEVTests.xctest */,
-				476CB0902F111C27003E4755 /* TabsUp-DEVUITests.xctest */,
+				476CB0792F111C26003E4755 /* TabsUp.app */,
+				476CB0862F111C27003E4755 /* TabsUpTests.xctest */,
+				476CB0902F111C27003E4755 /* TabsUpUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		476CB0782F111C26003E4755 /* TabsUp-DEV */ = {
+		476CB0782F111C26003E4755 /* TabsUp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 476CB09A2F111C27003E4755 /* Build configuration list for PBXNativeTarget "TabsUp-DEV" */;
+			buildConfigurationList = 476CB09A2F111C27003E4755 /* Build configuration list for PBXNativeTarget "TabsUp" */;
 			buildPhases = (
 				476CB0752F111C26003E4755 /* Sources */,
 				476CB0762F111C26003E4755 /* Frameworks */,
@@ -110,16 +110,16 @@
 			fileSystemSynchronizedGroups = (
 				476CB07B2F111C26003E4755 /* TabsUp-DEV */,
 			);
-			name = "TabsUp-DEV";
+			name = TabsUp;
 			packageProductDependencies = (
 			);
-			productName = "TabsUp-DEV";
-			productReference = 476CB0792F111C26003E4755 /* TabsUp-DEV.app */;
+			productName = TabsUp;
+			productReference = 476CB0792F111C26003E4755 /* TabsUp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		476CB0852F111C27003E4755 /* TabsUp-DEVTests */ = {
+		476CB0852F111C27003E4755 /* TabsUpTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 476CB09D2F111C27003E4755 /* Build configuration list for PBXNativeTarget "TabsUp-DEVTests" */;
+			buildConfigurationList = 476CB09D2F111C27003E4755 /* Build configuration list for PBXNativeTarget "TabsUpTests" */;
 			buildPhases = (
 				476CB0822F111C27003E4755 /* Sources */,
 				476CB0832F111C27003E4755 /* Frameworks */,
@@ -131,18 +131,18 @@
 				476CB0882F111C27003E4755 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				476CB0892F111C27003E4755 /* TabsUp-DEVTests */,
+				476CB0892F111C27003E4755 /* TabsUpTests */,
 			);
-			name = "TabsUp-DEVTests";
+			name = TabsUpTests;
 			packageProductDependencies = (
 			);
-			productName = "TabsUp-DEVTests";
-			productReference = 476CB0862F111C27003E4755 /* TabsUp-DEVTests.xctest */;
+			productName = TabsUpTests;
+			productReference = 476CB0862F111C27003E4755 /* TabsUpTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		476CB08F2F111C27003E4755 /* TabsUp-DEVUITests */ = {
+		476CB08F2F111C27003E4755 /* TabsUpUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 476CB0A02F111C27003E4755 /* Build configuration list for PBXNativeTarget "TabsUp-DEVUITests" */;
+			buildConfigurationList = 476CB0A02F111C27003E4755 /* Build configuration list for PBXNativeTarget "TabsUpUITests" */;
 			buildPhases = (
 				476CB08C2F111C27003E4755 /* Sources */,
 				476CB08D2F111C27003E4755 /* Frameworks */,
@@ -154,13 +154,13 @@
 				476CB0922F111C27003E4755 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				476CB0932F111C27003E4755 /* TabsUp-DEVUITests */,
+				476CB0932F111C27003E4755 /* TabsUpUITests */,
 			);
-			name = "TabsUp-DEVUITests";
+			name = TabsUpUITests;
 			packageProductDependencies = (
 			);
-			productName = "TabsUp-DEVUITests";
-			productReference = 476CB0902F111C27003E4755 /* TabsUp-DEVUITests.xctest */;
+			productName = TabsUpUITests;
+			productReference = 476CB0902F111C27003E4755 /* TabsUpUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -200,9 +200,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				476CB0782F111C26003E4755 /* TabsUp-DEV */,
-				476CB0852F111C27003E4755 /* TabsUp-DEVTests */,
-				476CB08F2F111C27003E4755 /* TabsUp-DEVUITests */,
+				476CB0782F111C26003E4755 /* TabsUp */,
+				476CB0852F111C27003E4755 /* TabsUpTests */,
+				476CB08F2F111C27003E4755 /* TabsUpUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -258,12 +258,12 @@
 /* Begin PBXTargetDependency section */
 		476CB0882F111C27003E4755 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 476CB0782F111C26003E4755 /* TabsUp-DEV */;
+			target = 476CB0782F111C26003E4755 /* TabsUp */;
 			targetProxy = 476CB0872F111C27003E4755 /* PBXContainerItemProxy */;
 		};
 		476CB0922F111C27003E4755 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 476CB0782F111C26003E4755 /* TabsUp-DEV */;
+			target = 476CB0782F111C26003E4755 /* TabsUp */;
 			targetProxy = 476CB0912F111C27003E4755 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -405,7 +405,8 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -413,7 +414,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "tw.TabsUp-DEV";
+				PRODUCT_BUNDLE_IDENTIFIER = tw.TabsUp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -444,7 +445,8 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -452,7 +454,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "tw.TabsUp-DEV";
+				PRODUCT_BUNDLE_IDENTIFIER = tw.TabsUp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -478,7 +480,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "tw.TabsUp-DEVTests";
+				PRODUCT_BUNDLE_IDENTIFIER = tw.TabsUpTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -486,7 +488,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TabsUp-DEV.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TabsUp-DEV";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TabsUp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TabsUp";
 			};
 			name = Debug;
 		};
@@ -500,7 +502,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "tw.TabsUp-DEVTests";
+				PRODUCT_BUNDLE_IDENTIFIER = tw.TabsUpTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -508,7 +510,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TabsUp-DEV.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TabsUp-DEV";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TabsUp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TabsUp";
 			};
 			name = Release;
 		};
@@ -520,7 +522,7 @@
 				DEVELOPMENT_TEAM = 76KC6HQ7VU;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "tw.TabsUp-DEVUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = tw.TabsUpUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -528,7 +530,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "TabsUp-DEV";
+				TEST_TARGET_NAME = TabsUp;
 			};
 			name = Debug;
 		};
@@ -540,7 +542,7 @@
 				DEVELOPMENT_TEAM = 76KC6HQ7VU;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "tw.TabsUp-DEVUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = tw.TabsUpUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -548,7 +550,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "TabsUp-DEV";
+				TEST_TARGET_NAME = TabsUp;
 			};
 			name = Release;
 		};
@@ -564,7 +566,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		476CB09A2F111C27003E4755 /* Build configuration list for PBXNativeTarget "TabsUp-DEV" */ = {
+		476CB09A2F111C27003E4755 /* Build configuration list for PBXNativeTarget "TabsUp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				476CB09B2F111C27003E4755 /* Debug */,
@@ -573,7 +575,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		476CB09D2F111C27003E4755 /* Build configuration list for PBXNativeTarget "TabsUp-DEVTests" */ = {
+		476CB09D2F111C27003E4755 /* Build configuration list for PBXNativeTarget "TabsUpTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				476CB09E2F111C27003E4755 /* Debug */,
@@ -582,7 +584,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		476CB0A02F111C27003E4755 /* Build configuration list for PBXNativeTarget "TabsUp-DEVUITests" */ = {
+		476CB0A02F111C27003E4755 /* Build configuration list for PBXNativeTarget "TabsUpUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				476CB0A12F111C27003E4755 /* Debug */,

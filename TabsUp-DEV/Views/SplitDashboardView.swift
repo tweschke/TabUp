@@ -1,6 +1,6 @@
 //
 //  SplitDashboardView.swift
-//  TabsUp-DEV
+//  TabsUp
 //
 //  Created by Thomas Weschke on 09/01/2026.
 //
@@ -163,6 +163,8 @@ struct SplitDashboardView: View {
                                 WeightedSplitResultCard(
                                     range: viewModel.weightedRange,
                                     currency: viewModel.selectedCurrency,
+                                    tipAmount: viewModel.tipAmount,
+                                    tipType: viewModel.tipType,
                                     onCustomize: {
                                         showSplitBreakdown = true
                                     }
@@ -463,6 +465,8 @@ struct EvenSplitResultCard: View {
 struct WeightedSplitResultCard: View {
     let range: (min: Double, max: Double)
     let currency: Currency
+    let tipAmount: Double
+    let tipType: TipType
     let onCustomize: () -> Void
     
     var body: some View {
@@ -475,6 +479,11 @@ struct WeightedSplitResultCard: View {
                 Text(String(format: "%@%.2f - %@%.2f", currency.symbol, range.min, currency.symbol, range.max))
                     .font(.system(size: 32, weight: .bold))
                     .foregroundColor(AppColors.primaryText)
+                
+                // Tip information line
+                Text(tipInformationText)
+                    .font(.caption)
+                    .foregroundColor(AppColors.secondaryText)
             }
             
             Button(action: onCustomize) {
@@ -499,6 +508,21 @@ struct WeightedSplitResultCard: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.white.opacity(0.1), lineWidth: 1)
         )
+    }
+    
+    private var tipInformationText: String {
+        if tipAmount == 0 {
+            return "Includes no tip"
+        }
+        
+        let tipAmountFormatted = String(format: "%@%.2f", currency.symbol, tipAmount)
+        
+        switch tipType {
+        case .percentage(let percentage):
+            return "Includes \(tipAmountFormatted) tip (\(Int(percentage))%)"
+        case .fixedAmount:
+            return "Includes \(tipAmountFormatted) tip (fixed)"
+        }
     }
 }
 

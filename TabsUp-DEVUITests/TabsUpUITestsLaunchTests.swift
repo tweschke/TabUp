@@ -1,13 +1,13 @@
 //
-//  TabsUp_DEVUITestsLaunchTests.swift
-//  TabsUp-DEVUITests
+//  TabsUpUITestsLaunchTests.swift
+//  TabsUpUITests
 //
 //  Created by Thomas Weschke on 09/01/2026.
 //
 
 import XCTest
 
-final class TabsUp_DEVUITestsLaunchTests: XCTestCase {
+final class TabsUpUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

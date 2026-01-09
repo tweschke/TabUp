@@ -1,6 +1,6 @@
 //
 //  UserDefaultsManager.swift
-//  TabsUp-DEV
+//  TabsUp
 //
 //  Created by Thomas Weschke on 09/01/2026.
 //
