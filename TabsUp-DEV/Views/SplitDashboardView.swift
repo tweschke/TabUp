@@ -247,15 +247,15 @@ struct TotalBillCard: View {
     
     var body: some View {
         Button(action: onTap) {
-            HStack {
-                // Green Dollar Icon
+            HStack(spacing: 16) {
+                // Green Currency Code Icon
                 RoundedRectangle(cornerRadius: 8)
                     .fill(AppColors.greenIcon)
-                    .frame(width: 40, height: 40)
+                    .frame(width: 60, height: 40)
                     .overlay(
-                        Text("$")
-                            .font(.title2)
-                            .fontWeight(.bold)
+                        Text(currency.code)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
                             .foregroundColor(.white)
                     )
                 
@@ -270,24 +270,6 @@ struct TotalBillCard: View {
                 }
                 
                 Spacer()
-                
-                // Scan Button
-                Button(action: {
-                    // Scan functionality (UI only for now)
-                }) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "camera.fill")
-                            .font(.caption)
-                        Text("Scan")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                    }
-                    .foregroundColor(AppColors.buttonText)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(AppColors.greenIcon)
-                    .cornerRadius(8)
-                }
             }
             .padding()
             .background(AppColors.cardBackground)

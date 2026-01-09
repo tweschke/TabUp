@@ -11,6 +11,7 @@ struct SplitBreakdownView: View {
     @ObservedObject var viewModel: SplitViewModel
     @Environment(\.dismiss) var dismiss
     @State private var splitMethod: SplitMethod = .shares
+    @State private var showShareSheet: Bool = false
     
     enum SplitMethod {
         case shares
@@ -161,17 +162,49 @@ struct SplitBreakdownView: View {
             
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    // Share functionality
+                    showShareSheet = true
                 }) {
                     Image(systemName: "square.and.arrow.up")
                         .foregroundColor(AppColors.primaryText)
                 }
             }
         }
+        .sheet(isPresented: $showShareSheet) {
+            let shareText = generateShareContent()
+            ShareSheetView(activityItemSource: ShareActivityItemSource(shareText: shareText))
+        }
     }
     
     private func formatCurrency(_ amount: Double) -> String {
         return String(format: "%@%.2f", viewModel.selectedCurrency.symbol, amount)
+    }
+    
+    private func generateShareContent() -> String {
+        let currency = viewModel.selectedCurrency
+        let totalBill = viewModel.totalWithTip
+        let tipAmount = viewModel.tipAmount
+        
+        var shareText = "Breakdown from TabsUp\n\n"
+        shareText += "Total Bill: \(currency.symbol)\(String(format: "%.2f", totalBill))\n"
+        
+        // Add tip information if applicable
+        if tipAmount > 0 {
+            switch viewModel.tipType {
+            case .percentage(let percentage):
+                shareText += "Tip: \(currency.symbol)\(String(format: "%.2f", tipAmount)) (\(Int(percentage))%)\n"
+            case .fixedAmount:
+                shareText += "Tip: \(currency.symbol)\(String(format: "%.2f", tipAmount))\n"
+            }
+        }
+        
+        shareText += "\nIndividual Shares:\n"
+        
+        for person in viewModel.people {
+            shareText += "• \(person.name): \(currency.symbol)\(String(format: "%.2f", person.amount))\n"
+        }
+        
+        shareText += "\nLet's get this settled! 💸"
+        return shareText
     }
 }
 
