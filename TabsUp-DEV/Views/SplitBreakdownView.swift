@@ -23,112 +23,12 @@ struct SplitBreakdownView: View {
             AppColors.darkBackground
                 .ignoresSafeArea()
             
-            VStack(spacing: 0) {
-                // Total Bill Card
-                VStack(spacing: 8) {
-                    Text("Total Bill")
-                        .font(.headline)
-                        .foregroundColor(AppColors.secondaryText)
-                    
-                    Text(formatCurrency(viewModel.totalWithTip))
-                        .font(.system(size: 36, weight: .bold))
-                        .foregroundColor(AppColors.primaryText)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 24)
-                .background(AppColors.cardBackground)
-                .cornerRadius(16)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
-                )
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
-                
-                // Split Method Toggle
-                HStack(spacing: 12) {
-                    SplitMethodButton(
-                        title: "Shares",
-                        isSelected: splitMethod == .shares
-                    ) {
-                        splitMethod = .shares
-                        viewModel.calculateWeightedSplit()
-                    }
-                    
-                    SplitMethodButton(
-                        title: "Percentages",
-                        isSelected: splitMethod == .percentages
-                    ) {
-                        splitMethod = .percentages
-                        viewModel.calculateWeightedSplitByPercentage()
-                    }
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 24)
-                
-                // Instruction Text
-                Text(splitMethod == .shares ? "Tap +/- to adjust shares" : "Adjust percentages")
-                    .font(.caption)
-                    .foregroundColor(AppColors.secondaryText)
-                    .padding(.top, 8)
-                    .padding(.horizontal, 20)
-                
-                // People List
-                ScrollView {
-                    VStack(spacing: 16) {
-                        ForEach(viewModel.people) { person in
-                            PersonCard(
-                                person: person,
-                                splitMethod: splitMethod,
-                                currency: viewModel.selectedCurrency,
-                                onSharesChange: { delta in
-                                    viewModel.updatePersonShares(person.id, delta: delta)
-                                },
-                                onPercentageChange: { delta in
-                                    viewModel.updatePersonPercentage(person.id, delta: delta)
-                                }
-                            )
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 24)
-                }
-                
-                Spacer()
-                
-                // Start New Split Button
-                Button(action: {
-                    viewModel.startNewSplit()
-                    dismiss()
-                }) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "arrow.clockwise")
-                            .font(.caption)
-                        Text("Start New Split")
-                            .font(.subheadline)
-                    }
-                    .foregroundColor(AppColors.secondaryText)
-                }
-                .padding(.bottom, 8)
-                
-                // Done Button
-                Button(action: {
-                    dismiss()
-                }) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "checkmark")
-                            .font(.headline)
-                        Text("Done")
-                            .font(.headline)
-                    }
-                    .foregroundColor(AppColors.buttonText)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 56)
-                    .background(AppColors.buttonBackground)
-                    .cornerRadius(16)
-                }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 32)
+            if viewModel.splitType == .even {
+                // Even Split Summary View
+                evenSplitView
+            } else {
+                // Weighted Split View with adjustments
+                weightedSplitView
             }
         }
         .onAppear {
@@ -136,11 +36,12 @@ struct SplitBreakdownView: View {
             if viewModel.people.isEmpty {
                 viewModel.resetPeople()
             }
-            // Calculate initial split
-            if splitMethod == .shares {
-                viewModel.calculateWeightedSplit()
-            } else {
-                viewModel.calculateWeightedSplitByPercentage()
+            // For even splits, ensure people array has correct count
+            if viewModel.splitType == .even {
+                // Ensure people array matches numberOfPeople
+                if viewModel.people.count != viewModel.numberOfPeople {
+                    viewModel.resetPeople()
+                }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -175,6 +76,230 @@ struct SplitBreakdownView: View {
         }
     }
     
+    // MARK: - Even Split View
+    
+    private var evenSplitView: some View {
+        VStack(spacing: 0) {
+            // Total Bill Card
+            VStack(spacing: 8) {
+                Text("Total Bill")
+                    .font(.headline)
+                    .foregroundColor(AppColors.secondaryText)
+                
+                Text(formatCurrency(viewModel.totalWithTip))
+                    .font(.system(size: 36, weight: .bold))
+                    .foregroundColor(AppColors.primaryText)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 24)
+            .background(AppColors.cardBackground)
+            .cornerRadius(16)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
+            )
+            .padding(.horizontal, 20)
+            .padding(.top, 20)
+            
+            // Per Person Amount Card
+            VStack(spacing: 8) {
+                Text("Per Person")
+                    .font(.headline)
+                    .foregroundColor(AppColors.secondaryText)
+                
+                Text(formatCurrency(viewModel.perPersonEven))
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundColor(AppColors.primaryText)
+                
+                Text("Split evenly among \(viewModel.numberOfPeople) \(viewModel.numberOfPeople == 1 ? "person" : "people")")
+                    .font(.caption)
+                    .foregroundColor(AppColors.secondaryText)
+                    .padding(.top, 4)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 24)
+            .background(AppColors.cardBackground)
+            .cornerRadius(16)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
+            )
+            .padding(.horizontal, 20)
+            .padding(.top, 24)
+            
+            // People List (Read-only)
+            ScrollView {
+                VStack(spacing: 16) {
+                    ForEach(viewModel.people) { person in
+                        EvenSplitPersonCard(
+                            person: person,
+                            currency: viewModel.selectedCurrency,
+                            perPersonAmount: viewModel.perPersonEven
+                        )
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 24)
+            }
+            
+            Spacer()
+            
+            // Start New Split Button
+            Button(action: {
+                viewModel.startNewSplit()
+                dismiss()
+            }) {
+                HStack(spacing: 8) {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.caption)
+                    Text("Start New Split")
+                        .font(.subheadline)
+                }
+                .foregroundColor(AppColors.secondaryText)
+            }
+            .padding(.bottom, 8)
+            
+            // Done Button
+            Button(action: {
+                dismiss()
+            }) {
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark")
+                        .font(.headline)
+                    Text("Done")
+                        .font(.headline)
+                }
+                .foregroundColor(AppColors.buttonText)
+                .frame(maxWidth: .infinity)
+                .frame(height: 56)
+                .background(AppColors.buttonBackground)
+                .cornerRadius(16)
+            }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 32)
+        }
+    }
+    
+    // MARK: - Weighted Split View
+    
+    private var weightedSplitView: some View {
+        VStack(spacing: 0) {
+            // Total Bill Card
+            VStack(spacing: 8) {
+                Text("Total Bill")
+                    .font(.headline)
+                    .foregroundColor(AppColors.secondaryText)
+                
+                Text(formatCurrency(viewModel.totalWithTip))
+                    .font(.system(size: 36, weight: .bold))
+                    .foregroundColor(AppColors.primaryText)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 24)
+            .background(AppColors.cardBackground)
+            .cornerRadius(16)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
+            )
+            .padding(.horizontal, 20)
+            .padding(.top, 20)
+            
+            // Split Method Toggle
+            HStack(spacing: 12) {
+                SplitMethodButton(
+                    title: "Shares",
+                    isSelected: splitMethod == .shares
+                ) {
+                    splitMethod = .shares
+                    viewModel.calculateWeightedSplit()
+                }
+                
+                SplitMethodButton(
+                    title: "Percentages",
+                    isSelected: splitMethod == .percentages
+                ) {
+                    splitMethod = .percentages
+                    viewModel.calculateWeightedSplitByPercentage()
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 24)
+            
+            // Instruction Text
+            Text(splitMethod == .shares ? "Tap +/- to adjust shares" : "Adjust percentages")
+                .font(.caption)
+                .foregroundColor(AppColors.secondaryText)
+                .padding(.top, 8)
+                .padding(.horizontal, 20)
+            
+            // People List
+            ScrollView {
+                VStack(spacing: 16) {
+                    ForEach(viewModel.people) { person in
+                        PersonCard(
+                            person: person,
+                            splitMethod: splitMethod,
+                            currency: viewModel.selectedCurrency,
+                            onSharesChange: { delta in
+                                viewModel.updatePersonShares(person.id, delta: delta)
+                            },
+                            onPercentageChange: { delta in
+                                viewModel.updatePersonPercentage(person.id, delta: delta)
+                            }
+                        )
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 24)
+            }
+            
+            Spacer()
+            
+            // Start New Split Button
+            Button(action: {
+                viewModel.startNewSplit()
+                dismiss()
+            }) {
+                HStack(spacing: 8) {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.caption)
+                    Text("Start New Split")
+                        .font(.subheadline)
+                }
+                .foregroundColor(AppColors.secondaryText)
+            }
+            .padding(.bottom, 8)
+            
+            // Done Button
+            Button(action: {
+                dismiss()
+            }) {
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark")
+                        .font(.headline)
+                    Text("Done")
+                        .font(.headline)
+                }
+                .foregroundColor(AppColors.buttonText)
+                .frame(maxWidth: .infinity)
+                .frame(height: 56)
+                .background(AppColors.buttonBackground)
+                .cornerRadius(16)
+            }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 32)
+        }
+        .onAppear {
+            // Calculate initial split
+            if splitMethod == .shares {
+                viewModel.calculateWeightedSplit()
+            } else {
+                viewModel.calculateWeightedSplitByPercentage()
+            }
+        }
+    }
+    
     private func formatCurrency(_ amount: Double) -> String {
         return String(format: "%@%.2f", viewModel.selectedCurrency.symbol, amount)
     }
@@ -197,10 +322,20 @@ struct SplitBreakdownView: View {
             }
         }
         
-        shareText += "\nIndividual Shares:\n"
+        shareText += "\n"
         
-        for person in viewModel.people {
-            shareText += "• \(person.name): \(currency.symbol)\(String(format: "%.2f", person.amount))\n"
+        if viewModel.splitType == .even {
+            shareText += "Even Split (\(viewModel.numberOfPeople) \(viewModel.numberOfPeople == 1 ? "person" : "people")):\n"
+            shareText += "Per Person: \(currency.symbol)\(String(format: "%.2f", viewModel.perPersonEven))\n\n"
+            shareText += "Individual Shares:\n"
+            for person in viewModel.people {
+                shareText += "• \(person.name): \(currency.symbol)\(String(format: "%.2f", viewModel.perPersonEven))\n"
+            }
+        } else {
+            shareText += "Individual Shares:\n"
+            for person in viewModel.people {
+                shareText += "• \(person.name): \(currency.symbol)\(String(format: "%.2f", person.amount))\n"
+            }
         }
         
         shareText += "\nLet's get this settled! 💸"
@@ -315,6 +450,46 @@ struct PersonCard: View {
                     }
                 }
             }
+        }
+        .padding()
+        .background(AppColors.cardBackground)
+        .cornerRadius(16)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+        )
+    }
+}
+
+struct EvenSplitPersonCard: View {
+    let person: Person
+    let currency: Currency
+    let perPersonAmount: Double
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            // Avatar
+            Circle()
+                .fill(person.name == "You" ? AppColors.greenIcon : AppColors.purpleIcon)
+                .frame(width: 44, height: 44)
+                .overlay(
+                    Image(systemName: "person.fill")
+                        .foregroundColor(.white)
+                        .font(.system(size: 20))
+                )
+            
+            // Name
+            Text(person.name)
+                .font(.headline)
+                .foregroundColor(AppColors.primaryText)
+            
+            Spacer()
+            
+            // Amount (read-only)
+            Text(String(format: "%@%.2f", currency.symbol, perPersonAmount))
+                .font(.title3)
+                .fontWeight(.semibold)
+                .foregroundColor(AppColors.primaryText)
         }
         .padding()
         .background(AppColors.cardBackground)

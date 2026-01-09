@@ -186,8 +186,12 @@ struct EnterAmountView: View {
             displayString = wholeNumberPart + ".00"
         }
         
-        // Update the actual amount value
-        amount = Double(displayString) ?? 0.0
+        // Update the actual amount value with validation
+        if let parsedAmount = Double(displayString), parsedAmount.isFinite, parsedAmount >= 0 {
+            amount = parsedAmount
+        } else {
+            amount = 0.0
+        }
     }
     
     private func initializeFromAmount() {
@@ -212,7 +216,12 @@ struct EnterAmountView: View {
     }
     
     private func confirmAmount() {
-        amount = Double(displayString) ?? 0.0
+        // Validate amount before confirming
+        if let parsedAmount = Double(displayString), parsedAmount.isFinite, parsedAmount >= 0 {
+            amount = parsedAmount
+        } else {
+            amount = 0.0
+        }
         isPresented = false
     }
 }

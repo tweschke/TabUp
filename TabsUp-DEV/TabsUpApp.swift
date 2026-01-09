@@ -9,13 +9,6 @@ import SwiftUI
 
 @main
 struct TabsUpApp: App {
-    init() {
-        // Set dark mode appearance
-        if #available(iOS 17.0, *) {
-            // Dark mode is handled by SwiftUI
-        }
-    }
-    
     var body: some Scene {
         WindowGroup {
             SplitDashboardView()

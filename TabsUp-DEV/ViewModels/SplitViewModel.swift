@@ -67,11 +67,18 @@ class SplitViewModel: ObservableObject {
     
     // MARK: - Computed Properties
     
+    /// Calculates the tip amount based on the current tip type.
+    /// Returns 0.0 if billTotal is invalid or tip calculation would overflow.
     var tipAmount: Double {
+        guard billTotal >= 0, billTotal.isFinite else { return 0.0 }
+        
         switch tipType {
         case .percentage(let percentage):
-            return billTotal * (percentage / 100.0)
+            guard percentage >= 0, percentage <= 100, percentage.isFinite else { return 0.0 }
+            let calculatedTip = billTotal * (percentage / 100.0)
+            return calculatedTip.isFinite ? calculatedTip : 0.0
         case .fixedAmount(let amount):
+            guard amount >= 0, amount.isFinite else { return 0.0 }
             return amount
         }
     }
@@ -85,13 +92,22 @@ class SplitViewModel: ObservableObject {
         }
     }
     
+    /// Calculates the total bill amount including tip.
+    /// Returns 0.0 if calculation would overflow or result in invalid value.
     var totalWithTip: Double {
-        billTotal + tipAmount
+        let total = billTotal + tipAmount
+        guard total >= 0, total.isFinite else { return 0.0 }
+        return total
     }
     
+    /// Calculates the per-person amount for an even split.
+    /// Returns 0.0 if numberOfPeople is 0 or calculation would overflow.
     var perPersonEven: Double {
         guard numberOfPeople > 0 else { return 0.0 }
-        return totalWithTip / Double(numberOfPeople)
+        let total = totalWithTip
+        guard total > 0 else { return 0.0 }
+        let perPerson = total / Double(numberOfPeople)
+        return perPerson.isFinite ? perPerson : 0.0
     }
     
     var weightedRange: (min: Double, max: Double) {
@@ -102,17 +118,27 @@ class SplitViewModel: ObservableObject {
     
     // MARK: - Methods
     
+    /// Resets the people array with default values based on numberOfPeople.
+    /// Ensures at least 2 people are present and recalculates split if billTotal > 0.
     func resetPeople() {
+        // Ensure minimum of 2 people
+        if numberOfPeople < 2 {
+            numberOfPeople = 2
+        }
+        
         people = (0..<numberOfPeople).map { index in
             let name = index == 0 ? "You" : "Friend \(index)"
             let defaultShare = 1
             return Person(name: name, shares: defaultShare)
         }
-        if billTotal > 0 {
+        
+        if billTotal > 0 && splitType == .weighted {
             calculateWeightedSplit()
         }
     }
     
+    /// Updates the number of people, ensuring minimum of 2.
+    /// Resets people array if count changes.
     func updateNumberOfPeople(_ count: Int) {
         let oldCount = numberOfPeople
         numberOfPeople = max(2, count)
@@ -122,34 +148,86 @@ class SplitViewModel: ObservableObject {
         }
     }
     
+    /// Calculates weighted split amounts based on shares.
+    /// Handles edge cases: empty people array, zero total, zero shares, overflow.
+    /// Normalizes amounts proportionally based on each person's share ratio.
     func calculateWeightedSplit() {
-        guard !people.isEmpty, totalWithTip > 0 else { return }
+        guard !people.isEmpty, totalWithTip > 0, totalWithTip.isFinite else {
+            // Reset all amounts to 0 if conditions aren't met
+            for index in people.indices {
+                people[index].amount = 0.0
+                people[index].percentage = 0.0
+            }
+            return
+        }
         
         let totalShares = people.reduce(0) { $0 + $1.shares }
-        guard totalShares > 0 else { return }
+        guard totalShares > 0 else {
+            // Reset all amounts if no shares
+            for index in people.indices {
+                people[index].amount = 0.0
+                people[index].percentage = 0.0
+            }
+            return
+        }
+        
+        let total = totalWithTip
         
         // Calculate amounts based on shares
         for index in people.indices {
             let shareRatio = Double(people[index].shares) / Double(totalShares)
-            people[index].amount = totalWithTip * shareRatio
-            people[index].percentage = shareRatio * 100.0
+            let calculatedAmount = total * shareRatio
+            
+            // Ensure calculated values are valid and finite
+            if calculatedAmount.isFinite && calculatedAmount >= 0 {
+                people[index].amount = calculatedAmount
+                people[index].percentage = shareRatio * 100.0
+            } else {
+                people[index].amount = 0.0
+                people[index].percentage = 0.0
+            }
         }
     }
     
+    /// Calculates weighted split amounts based on percentages.
+    /// Normalizes percentages to sum to 100% if they don't already.
+    /// Handles edge cases: empty people array, zero total, zero percentages, overflow.
     func calculateWeightedSplitByPercentage() {
-        guard !people.isEmpty, totalWithTip > 0 else { return }
+        guard !people.isEmpty, totalWithTip > 0, totalWithTip.isFinite else {
+            // Reset all amounts to 0 if conditions aren't met
+            for index in people.indices {
+                people[index].amount = 0.0
+            }
+            return
+        }
         
         // Normalize percentages to sum to 100%
         let totalPercentage = people.reduce(0.0) { $0 + $1.percentage }
-        guard totalPercentage > 0 else { return }
+        guard totalPercentage > 0, totalPercentage.isFinite else {
+            // Reset all amounts if no valid percentages
+            for index in people.indices {
+                people[index].amount = 0.0
+                people[index].percentage = 0.0
+            }
+            return
+        }
         
         let normalizationFactor = 100.0 / totalPercentage
+        let total = totalWithTip
         
         // Calculate amounts based on normalized percentages
         for index in people.indices {
             let normalizedPercentage = people[index].percentage * normalizationFactor
-            people[index].amount = totalWithTip * (normalizedPercentage / 100.0)
-            people[index].percentage = normalizedPercentage
+            let calculatedAmount = total * (normalizedPercentage / 100.0)
+            
+            // Ensure calculated values are valid and finite
+            if calculatedAmount.isFinite && calculatedAmount >= 0 && normalizedPercentage.isFinite {
+                people[index].amount = calculatedAmount
+                people[index].percentage = normalizedPercentage
+            } else {
+                people[index].amount = 0.0
+                people[index].percentage = 0.0
+            }
         }
     }
     
@@ -176,20 +254,26 @@ class SplitViewModel: ObservableObject {
         userDefaultsManager.selectedCurrency = currency
     }
     
+    /// Sets the tip percentage, clamping to valid range (0-100).
     func setTipPercentage(_ percentage: Double) {
-        tipPercentage = percentage
-        tipType = .percentage(percentage)
+        let clampedPercentage = max(0.0, min(100.0, percentage.isFinite ? percentage : 0.0))
+        tipPercentage = clampedPercentage
+        tipType = .percentage(clampedPercentage)
         customTipValue = 0.0
     }
     
+    /// Sets a custom tip percentage, clamping to valid range (0-100).
     func setCustomTipPercentage(_ percentage: Double) {
-        customTipValue = percentage
-        tipType = .percentage(percentage)
+        let clampedPercentage = max(0.0, min(100.0, percentage.isFinite ? percentage : 0.0))
+        customTipValue = clampedPercentage
+        tipType = .percentage(clampedPercentage)
     }
     
+    /// Sets a custom fixed tip amount, ensuring non-negative and finite value.
     func setCustomTipAmount(_ amount: Double) {
-        customTipValue = amount
-        tipType = .fixedAmount(amount)
+        let clampedAmount = max(0.0, amount.isFinite ? amount : 0.0)
+        customTipValue = clampedAmount
+        tipType = .fixedAmount(clampedAmount)
     }
     
     func startNewSplit() {

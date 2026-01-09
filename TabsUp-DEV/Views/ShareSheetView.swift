@@ -29,7 +29,6 @@ class ShareActivityItemSource: NSObject, UIActivityItemSource {
         return "Breakdown from TabsUp"
     }
     
-    @available(iOS 13.0, *)
     func activityViewControllerLinkMetadata(_ activityViewController: UIActivityViewController) -> LPLinkMetadata? {
         let metadata = LPLinkMetadata()
         metadata.title = "Breakdown from TabsUp"
