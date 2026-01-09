@@ -12,8 +12,10 @@ struct EnterAmountView: View {
     @Binding var isPresented: Bool
     let currency: Currency
     
-    @State private var amountString: String = "0.00"
+    @State private var wholeNumberPart: String = "0"
+    @State private var decimalPart: String = ""
     @State private var hasDecimalPoint: Bool = false
+    @State private var displayString: String = "0.00"
     
     var body: some View {
         ZStack {
@@ -63,7 +65,7 @@ struct EnterAmountView: View {
                             .font(.system(size: 48, weight: .light))
                             .foregroundColor(AppColors.primaryText)
                         
-                        Text(amountString)
+                        Text(displayString)
                             .font(.system(size: 48, weight: .light))
                             .foregroundColor(AppColors.secondaryText)
                     }
@@ -121,55 +123,92 @@ struct EnterAmountView: View {
             }
         }
         .onAppear {
-            updateAmountString()
+            initializeFromAmount()
         }
     }
     
     private func appendDigit(_ digit: String) {
-        if amountString == "0.00" {
-            amountString = digit + ".00"
-        } else if hasDecimalPoint {
-            let parts = amountString.split(separator: ".")
-            if parts.count == 2 && parts[1].count < 2 {
-                amountString = String(parts[0]) + "." + String(parts[1]) + digit
+        if hasDecimalPoint {
+            // Building decimal part (max 2 digits)
+            if decimalPart.count < 2 {
+                decimalPart += digit
             }
         } else {
-            amountString += digit
+            // Building whole number part
+            if wholeNumberPart == "0" {
+                wholeNumberPart = digit
+            } else {
+                wholeNumberPart += digit
+            }
         }
-        updateAmount()
+        updateDisplayAndAmount()
     }
     
     private func appendDecimalPoint() {
+        // Only allow decimal point if we don't already have one
         if !hasDecimalPoint {
-            amountString += "."
             hasDecimalPoint = true
+            decimalPart = ""
         }
+        updateDisplayAndAmount()
     }
     
     private func deleteLastDigit() {
-        if amountString.count > 1 {
-            if amountString.last == "." {
+        if !decimalPart.isEmpty {
+            // Remove from decimal part
+            decimalPart = String(decimalPart.dropLast())
+            if decimalPart.isEmpty {
                 hasDecimalPoint = false
             }
-            amountString = String(amountString.dropLast())
-            if amountString.isEmpty || amountString == "0" {
-                amountString = "0.00"
-                hasDecimalPoint = false
-            }
+        } else if hasDecimalPoint {
+            // Remove the decimal point
+            hasDecimalPoint = false
+        } else if wholeNumberPart.count > 1 {
+            // Remove from whole number part
+            wholeNumberPart = String(wholeNumberPart.dropLast())
         } else {
-            amountString = "0.00"
+            // Reset to zero
+            wholeNumberPart = "0"
+            decimalPart = ""
             hasDecimalPoint = false
         }
-        updateAmount()
+        updateDisplayAndAmount()
     }
     
-    private func updateAmount() {
-        amount = Double(amountString) ?? 0.0
+    private func updateDisplayAndAmount() {
+        // Build display string
+        if hasDecimalPoint {
+            // Has decimal point, show whole number + "." + decimal part (padded to 2 digits)
+            let paddedDecimal = decimalPart.padding(toLength: 2, withPad: "0", startingAt: 0)
+            displayString = wholeNumberPart + "." + paddedDecimal
+        } else {
+            // No decimal point, show whole number with .00
+            displayString = wholeNumberPart + ".00"
+        }
+        
+        // Update the actual amount value
+        amount = Double(displayString) ?? 0.0
     }
     
-    private func updateAmountString() {
-        amountString = String(format: "%.2f", amount)
-        hasDecimalPoint = amountString.contains(".")
+    private func initializeFromAmount() {
+        if amount == 0.0 {
+            wholeNumberPart = "0"
+            decimalPart = ""
+            hasDecimalPoint = false
+            displayString = "0.00"
+        } else {
+            let formatted = String(format: "%.2f", amount)
+            let parts = formatted.split(separator: ".")
+            wholeNumberPart = String(parts[0])
+            if parts.count == 2 {
+                decimalPart = String(parts[1])
+                hasDecimalPoint = true
+            } else {
+                decimalPart = ""
+                hasDecimalPoint = false
+            }
+            displayString = formatted
+        }
     }
     
     private func confirmAmount() {
