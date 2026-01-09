@@ -9,6 +9,11 @@ import Foundation
 import SwiftUI
 import Combine
 
+enum TipType {
+    case percentage(Double)  // Percentage value (0-100)
+    case fixedAmount(Double)  // Fixed dollar amount
+}
+
 @MainActor
 class SplitViewModel: ObservableObject {
     @Published var billTotal: Double = 0.0 {
@@ -19,6 +24,20 @@ class SplitViewModel: ObservableObject {
         }
     }
     @Published var tipPercentage: Double = 0.0 {
+        didSet {
+            if splitType == .weighted && !people.isEmpty {
+                calculateWeightedSplit()
+            }
+        }
+    }
+    @Published var customTipValue: Double = 0.0 {
+        didSet {
+            if splitType == .weighted && !people.isEmpty {
+                calculateWeightedSplit()
+            }
+        }
+    }
+    @Published var tipType: TipType = .percentage(0.0) {
         didSet {
             if splitType == .weighted && !people.isEmpty {
                 calculateWeightedSplit()
@@ -49,7 +68,21 @@ class SplitViewModel: ObservableObject {
     // MARK: - Computed Properties
     
     var tipAmount: Double {
-        billTotal * (tipPercentage / 100.0)
+        switch tipType {
+        case .percentage(let percentage):
+            return billTotal * (percentage / 100.0)
+        case .fixedAmount(let amount):
+            return amount
+        }
+    }
+    
+    var isCustomTip: Bool {
+        switch tipType {
+        case .percentage(let percentage):
+            return !([0, 10, 15, 20, 25].contains(percentage))
+        case .fixedAmount:
+            return true
+        }
     }
     
     var totalWithTip: Double {
@@ -143,9 +176,27 @@ class SplitViewModel: ObservableObject {
         userDefaultsManager.selectedCurrency = currency
     }
     
+    func setTipPercentage(_ percentage: Double) {
+        tipPercentage = percentage
+        tipType = .percentage(percentage)
+        customTipValue = 0.0
+    }
+    
+    func setCustomTipPercentage(_ percentage: Double) {
+        customTipValue = percentage
+        tipType = .percentage(percentage)
+    }
+    
+    func setCustomTipAmount(_ amount: Double) {
+        customTipValue = amount
+        tipType = .fixedAmount(amount)
+    }
+    
     func startNewSplit() {
         billTotal = 0.0
         tipPercentage = 0.0
+        customTipValue = 0.0
+        tipType = .percentage(0.0)
         numberOfPeople = 2
         splitType = .even
         resetPeople()

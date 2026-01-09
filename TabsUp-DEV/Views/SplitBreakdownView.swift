@@ -37,6 +37,10 @@ struct SplitBreakdownView: View {
                 .padding(.vertical, 24)
                 .background(AppColors.cardBackground)
                 .cornerRadius(16)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                )
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
                 
@@ -198,78 +202,94 @@ struct PersonCard: View {
     let onPercentageChange: (Double) -> Void
     
     var body: some View {
-        HStack(spacing: 16) {
-            // Avatar
-            Circle()
-                .fill(person.name == "You" ? AppColors.greenIcon : AppColors.purpleIcon)
-                .frame(width: 44, height: 44)
-                .overlay(
-                    Image(systemName: "person.fill")
-                        .foregroundColor(.white)
-                        .font(.system(size: 20))
-                )
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(person.name)
-                    .font(.headline)
-                    .foregroundColor(AppColors.primaryText)
-                
-                HStack(spacing: 8) {
-                    Text(splitMethod == .shares ? "Shares" : "Percentage")
-                        .font(.caption)
-                        .foregroundColor(AppColors.secondaryText)
+        VStack(alignment: .leading, spacing: 16) {
+            // First Row: Avatar + Name on left, Amount on right
+            HStack {
+                HStack(spacing: 12) {
+                    // Avatar
+                    Circle()
+                        .fill(person.name == "You" ? AppColors.greenIcon : AppColors.purpleIcon)
+                        .frame(width: 44, height: 44)
+                        .overlay(
+                            Image(systemName: "person.fill")
+                                .foregroundColor(.white)
+                                .font(.system(size: 20))
+                        )
                     
-                    Text(splitMethod == .shares ? "\(person.shares)" : String(format: "%.0f%%", person.percentage))
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
+                    // Name
+                    Text(person.name)
+                        .font(.headline)
                         .foregroundColor(AppColors.primaryText)
+                }
+                
+                Spacer()
+                
+                // Amount
+                Text(String(format: "%@%.2f", currency.symbol, person.amount))
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundColor(AppColors.primaryText)
+            }
+            
+            // Second Row: Shares/Percentage controls - evenly distributed
+            HStack {
+                // Label
+                Text(splitMethod == .shares ? "Shares" : "Percentage")
+                    .font(.caption)
+                    .foregroundColor(AppColors.secondaryText)
+                
+                Spacer()
+                
+                // Value Display
+                Text(splitMethod == .shares ? "\(person.shares)" : String(format: "%.0f%%", person.percentage))
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(AppColors.primaryText)
+                    .frame(minWidth: 40)
+                
+                Spacer()
+                
+                // Adjustment Buttons
+                HStack(spacing: 12) {
+                    Button(action: {
+                        if splitMethod == .shares {
+                            onSharesChange(-1)
+                        } else {
+                            onPercentageChange(-1.0)
+                        }
+                    }) {
+                        Image(systemName: "minus")
+                            .font(.headline)
+                            .foregroundColor(AppColors.primaryText)
+                            .frame(width: 36, height: 36)
+                            .background((person.name == "You" ? AppColors.greenIcon : AppColors.purpleIcon).opacity(0.3))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
                     
-                    // Adjustment Buttons
-                    HStack(spacing: 8) {
-                        Button(action: {
-                            if splitMethod == .shares {
-                                onSharesChange(-1)
-                            } else {
-                                onPercentageChange(-1.0)
-                            }
-                        }) {
-                            Image(systemName: "minus")
-                                .font(.caption)
-                                .foregroundColor(AppColors.primaryText)
-                                .frame(width: 28, height: 28)
-                                .background(AppColors.cardBackground)
-                                .cornerRadius(6)
+                    Button(action: {
+                        if splitMethod == .shares {
+                            onSharesChange(1)
+                        } else {
+                            onPercentageChange(1.0)
                         }
-                        
-                        Button(action: {
-                            if splitMethod == .shares {
-                                onSharesChange(1)
-                            } else {
-                                onPercentageChange(1.0)
-                            }
-                        }) {
-                            Image(systemName: "plus")
-                                .font(.caption)
-                                .foregroundColor(AppColors.primaryText)
-                                .frame(width: 28, height: 28)
-                                .background(AppColors.cardBackground)
-                                .cornerRadius(6)
-                        }
+                    }) {
+                        Image(systemName: "plus")
+                            .font(.headline)
+                            .foregroundColor(AppColors.primaryText)
+                            .frame(width: 36, height: 36)
+                            .background((person.name == "You" ? AppColors.greenIcon : AppColors.purpleIcon).opacity(0.3))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
                 }
             }
-            
-            Spacer()
-            
-            // Amount
-            Text(String(format: "%@%.2f", currency.symbol, person.amount))
-                .font(.title3)
-                .fontWeight(.semibold)
-                .foregroundColor(AppColors.primaryText)
         }
         .padding()
         .background(AppColors.cardBackground)
         .cornerRadius(16)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+        )
     }
 }
 

@@ -212,7 +212,7 @@ struct EnterAmountView: View {
     }
     
     private func confirmAmount() {
-        amount = Double(amountString) ?? 0.0
+        amount = Double(displayString) ?? 0.0
         isPresented = false
     }
 }
