@@ -30,9 +30,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		476CB07B2F111C26003E4755 /* TabsUp-DEV */ = {
+		476CB07B2F111C26003E4755 /* TabsUp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "TabsUp-DEV";
+			path = TabsUp;
 			sourceTree = "<group>";
 		};
 		476CB0892F111C27003E4755 /* TabsUpTests */ = {
@@ -75,7 +75,7 @@
 		476CB0702F111C26003E4755 = {
 			isa = PBXGroup;
 			children = (
-				476CB07B2F111C26003E4755 /* TabsUp-DEV */,
+				476CB07B2F111C26003E4755 /* TabsUp */,
 				476CB0892F111C27003E4755 /* TabsUpTests */,
 				476CB0932F111C27003E4755 /* TabsUpUITests */,
 				476CB07A2F111C26003E4755 /* Products */,
@@ -108,7 +108,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				476CB07B2F111C26003E4755 /* TabsUp-DEV */,
+				476CB07B2F111C26003E4755 /* TabsUp */,
 			);
 			name = TabsUp;
 			packageProductDependencies = (
@@ -186,7 +186,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 476CB0742F111C26003E4755 /* Build configuration list for PBXProject "TabsUp-DEV" */;
+			buildConfigurationList = 476CB0742F111C26003E4755 /* Build configuration list for PBXProject "TabsUp" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -557,7 +557,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		476CB0742F111C26003E4755 /* Build configuration list for PBXProject "TabsUp-DEV" */ = {
+		476CB0742F111C26003E4755 /* Build configuration list for PBXProject "TabsUp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				476CB0982F111C27003E4755 /* Debug */,
