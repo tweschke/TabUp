@@ -88,7 +88,7 @@ The following tasks require manual testing and cannot be automated:
 
 ## Files Modified
 
-1. `TabsUp-DEV.xcodeproj/project.pbxproj` - Fixed deployment targets
+1. `TabsUp.xcodeproj/project.pbxproj` - Fixed deployment targets
 2. `TabsUp-DEV/Views/ShareSheetView.swift` - Removed iOS 13.0 check
 3. `TabsUp-DEV/TabsUpApp.swift` - Removed empty init
 4. `TabsUp-DEV/ViewModels/SplitViewModel.swift` - Added error handling and documentation
