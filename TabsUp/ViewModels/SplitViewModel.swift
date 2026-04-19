@@ -266,6 +266,7 @@ class SplitViewModel: ObservableObject {
     func setCustomTipPercentage(_ percentage: Double) {
         let clampedPercentage = max(0.0, min(100.0, percentage.isFinite ? percentage : 0.0))
         customTipValue = clampedPercentage
+        tipPercentage = clampedPercentage
         tipType = .percentage(clampedPercentage)
     }
     
@@ -273,6 +274,7 @@ class SplitViewModel: ObservableObject {
     func setCustomTipAmount(_ amount: Double) {
         let clampedAmount = max(0.0, amount.isFinite ? amount : 0.0)
         customTipValue = clampedAmount
+        tipPercentage = 0.0
         tipType = .fixedAmount(clampedAmount)
     }
     

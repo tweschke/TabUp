@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct SplitDashboardView: View {
-    @StateObject private var viewModel = SplitViewModel()
+    @ObservedObject var viewModel: SplitViewModel
+    var pagerSelectedPage: Binding<Int>
     @State private var showEnterAmount = false
     @State private var showCurrencySettings = false
     @State private var showSplitBreakdown = false
@@ -66,6 +67,10 @@ struct SplitDashboardView: View {
                         }
                         .padding(.horizontal, 20)
                         .padding(.top, 8)
+
+                        PagerIndicatorView(selection: pagerSelectedPage, pageCount: 2)
+                            .padding(.top, 6)
+                            .padding(.horizontal, 20)
                         
                         // Total Bill Card
                         TotalBillCard(
@@ -235,7 +240,7 @@ struct SplitDashboardView: View {
             }
             return "Custom"
         case .fixedAmount(let amount):
-            return String(format: "%@%.0f", viewModel.selectedCurrency.symbol, amount)
+            return String(format: "%@%.2f", viewModel.selectedCurrency.symbol, amount)
         }
     }
 }
@@ -683,10 +688,10 @@ struct CustomTipView: View {
         switch viewModel.tipType {
         case .percentage(let percentage):
             tipMode = .percentage
-            if viewModel.isCustomTip {
-                wholeNumberPart = String(format: "%.0f", percentage)
-                displayString = String(format: "%.0f", percentage)
-            }
+            decimalPart = ""
+            hasDecimalPoint = false
+            wholeNumberPart = String(format: "%.0f", percentage)
+            displayString = String(format: "%.0f", percentage)
         case .fixedAmount(let amount):
             tipMode = .fixedAmount
             let amountStr = String(format: "%.2f", amount)
@@ -788,5 +793,5 @@ struct CustomTipView: View {
 }
 
 #Preview {
-    SplitDashboardView()
+    SplitDashboardView(viewModel: SplitViewModel(), pagerSelectedPage: .constant(0))
 }

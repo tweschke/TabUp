@@ -1,39 +1,97 @@
-# Release plan — TabsUp
+# TabsUp v1.1 — Release plan
 
-## Versions
+## 1. Version overview
 
-| | Version |
-|---|--------|
-| **Current (shipping baseline)** | **1.0** |
+| | |
+|---|---|
+| **Current (live)** | **1.0** |
 | **Next** | **1.1** |
 
-## Goal for 1.1
+## 2. Goal
 
-Introduce **Tip mode** alongside the existing **Split** flow so users can work in either mode from a coherent navigation pattern.
+- Introduce a **dedicated Tip experience** alongside the existing **Split** flow.
+- **Maintain** current UI design and behaviour.
 
-## Phases
+## 3. UX direction
 
-### Phase 0: Swipe container
+- **Swipeable dashboard container** hosting two modes: **Split** and **Tip**.
+- **Split** screen: **unchanged** in layout and behaviour.
+- **Tip** is a **separate screen** within that container.
+- **Same visual design system** must be used.
 
-Foundation for switching between primary experiences (e.g. horizontal swipe or equivalent container). No full Tip UI yet—focus on structure and safe integration with existing Split screens.
+### Tip Mode behaviour
 
-### Phase 1: Tip UI
+- Single-user calculation only
+- No "number of people"
+- No split type (even / weighted)
+- Shows:
+  - bill amount
+  - tip percentage selection
+  - calculated tip amount
+  - total including tip
 
-Screens, controls, and layout for Tip mode consistent with current app style (dark theme, existing typography and spacing patterns). Wire navigation only as far as Phase 0 allows.
+## 4. Phases
 
-### Phase 2: Logic + polish
+| Phase | Focus |
+|--------|--------|
+| **Phase 0** | Dashboard container (**swipe navigation**). |
+| **Phase 1** | **Tip UI** (layout only). |
+| **Phase 2** | **Tip logic integration** — reuse existing logic. |
+| **Phase 3** | **Polish and validation**. |
 
-Tip calculations, validation, edge cases, persistence if required, accessibility passes, and final UI polish. Align versioning and release assets with **02-release-checklist.md**.
+## 5. In scope
 
-## In scope (1.1)
+- Swipe navigation
+- Tip calculation screen
+- Reuse of existing tip logic
+- Design consistency
 
-- Tip mode as a first-class companion to Split, per phases above
-- Reuse existing design language (colors, components, patterns)
-- iOS deployment target and project constraints unchanged unless explicitly decided elsewhere
+## 6. Out of scope
 
-## Out of scope (1.1)
+- UI redesign
+- New features beyond tip mode
+- Persistence changes
+- Sharing improvements
+- Animations overhaul
+- Widgets or external integrations
 
-- New unrelated features (subscriptions, accounts, cloud sync, etc.)
-- Full redesign of Split or global navigation unrelated to Tip introduction
-- Android or other platforms
-- Marketing copy or App Store listing beyond what release checklist requires
+## 7. Constraints
+
+- **`SplitViewModel`** remains the **primary logic source**.
+- **Existing Split screen** must **not change visually**.
+- **Minimal code changes** only.
+- Tip screen must reuse existing components and styling patterns where possible (cards, spacing, typography, colours).
+- No new design language may be introduced.
+
+## 8. Implementation guardrails
+
+- Do not modify `.xcodeproj` structure
+- Do not rename files or folders
+- Do not introduce new dependencies
+- Do not perform Git operations
+- Work strictly phase-by-phase
+- Stop after each phase and report changes
+- Always list touched files
+
+## 9. Success criteria
+
+**Phase 0**
+
+- App launches normally
+- Split screen behaves exactly as before
+- User can swipe to a second placeholder page
+
+**Phase 1**
+
+- Tip screen displays correctly
+- UI matches Split design language
+
+**Phase 2**
+
+- Tip values calculate correctly
+- No regression in Split functionality
+
+**Phase 3**
+
+- UI spacing, formatting, and consistency verified
+- App ready for release testing
