@@ -89,14 +89,14 @@ The following tasks require manual testing and cannot be automated:
 ## Files Modified
 
 1. `TabsUp.xcodeproj/project.pbxproj` - Fixed deployment targets
-2. `TabsUp-DEV/Views/ShareSheetView.swift` - Removed iOS 13.0 check
-3. `TabsUp-DEV/TabsUpApp.swift` - Removed empty init
-4. `TabsUp-DEV/ViewModels/SplitViewModel.swift` - Added error handling and documentation
-5. `TabsUp-DEV/Views/EnterAmountView.swift` - Added input validation
+2. `TabsUp/Views/ShareSheetView.swift` - Removed iOS 13.0 check
+3. `TabsUp/TabsUpApp.swift` - Removed empty init
+4. `TabsUp/ViewModels/SplitViewModel.swift` - Added error handling and documentation
+5. `TabsUp/Views/EnterAmountView.swift` - Added input validation
 
 ## Files Removed
 
-1. `TabsUp-DEV/ContentView.swift` - Unused file removed
+1. `TabsUp/ContentView.swift` - Unused file removed
 
 ## Next Steps
 
@@ -110,6 +110,7 @@ The following tasks require manual testing and cannot be automated:
 
 ## Notes
 
+- Xcode project: `TabsUp.xcodeproj` (project display name **TabsUp**). Targets: **TabsUp**, **TabsUpTests**, **TabsUpUITests**. Source folders: `TabsUp/`, `TabsUpTests/`, `TabsUpUITests/` (aligned with synchronized groups in the project file).
 - The app is configured for iOS 17.0+ deployment
 - Bundle identifier: `tw.TabsUp`
 - Marketing version: 1.0

@@ -4,28 +4,41 @@
 
 Build a SwiftUI-based iOS bill splitting application compatible with iOS 17+. The app allows users to split bills evenly or by weighted shares/percentages, with persistent currency selection.
 
+## Xcode project
+
+- **Project file:** `TabsUp.xcodeproj` (project name: **TabsUp**)
+- **Targets:** `TabsUp` (iOS app), `TabsUpTests` (unit tests), `TabsUpUITests` (UI tests)
+- **Source folders (on disk):** `TabsUp/`, `TabsUpTests/`, `TabsUpUITests/` — each target uses a synchronized root group pointing at the matching folder
+
 ## Architecture
 
 ### File Structure
 
 ```
-TabsUp-DEV/
+TabsUp/
+├── TabsUpApp.swift (entry point)
+├── LaunchScreen.storyboard
+├── Assets.xcassets/
 ├── Models/
 │   ├── Currency.swift
-│   ├── BillSplit.swift
 │   ├── Person.swift
 │   └── SplitType.swift
 ├── Views/
 │   ├── SplitDashboardView.swift (main screen)
 │   ├── EnterAmountView.swift (modal for bill input)
 │   ├── SplitBreakdownView.swift (detailed breakdown)
-│   └── CurrencySettingsView.swift (currency selection)
+│   ├── CurrencySettingsView.swift (currency selection)
+│   └── ShareSheetView.swift
 ├── ViewModels/
-│   └── SplitViewModel.swift (business logic)
+│   └── SplitViewModel.swift (observable state, calculations, people array)
 ├── Utilities/
 │   ├── AppColors.swift (color palette)
 │   └── UserDefaultsManager.swift (persistence)
-└── TabsUp_DEVApp.swift (entry point)
+TabsUpTests/
+└── TabsUpTests.swift
+TabsUpUITests/
+├── TabsUpUITests.swift
+└── TabsUpUITestsLaunchTests.swift
 ```
 
 ## Implementation Steps
@@ -45,7 +58,7 @@ Create `AppColors.swift` with color constants matching the mockups:
 - **Currency.swift**: Enum or struct with currency code, name, symbol (USD, EUR, GBP, JPY, CAD, AUD, CHF, CNY, INR, MXN, BRL, ZAR)
 - **SplitType.swift**: Enum for `.even` and `.weighted`
 - **Person.swift**: Struct with name, shares, percentage, calculated amount
-- **BillSplit.swift**: Main model containing total amount, tip percentage, number of people, split type, currency, and people array
+- **SplitViewModel.swift**: Holds bill total, tip, headcount, split type, currency, and people array (the main “split” state lives here rather than a separate `BillSplit` type)
 
 ### 3. Persistence Layer
 
@@ -117,7 +130,7 @@ Components:
 
 ### 9. App Entry Point
 
-- Update `TabsUp_DEVApp.swift` to initialize with SplitDashboardView
+- Update `TabsUpApp.swift` to initialize with SplitDashboardView
 - Set dark mode appearance
 - Initialize default currency (USD) if none selected
 
