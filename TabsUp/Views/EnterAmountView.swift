@@ -22,21 +22,21 @@ struct EnterAmountView: View {
             AppColors.darkBackground
                 .ignoresSafeArea()
             
-            VStack(spacing: 0) {
+            VStack(spacing: DesignSpacing.stackFlush) {
                 // Header
                 HStack {
                     Button(action: {
                         isPresented = false
                     }) {
                         Image(systemName: "xmark")
-                            .font(.title2)
+                            .font(DesignTypography.sheetNavigationBar)
                             .foregroundColor(AppColors.primaryText)
                     }
                     
                     Spacer()
                     
                     Text("Enter Amount")
-                        .font(.title2)
+                        .font(DesignTypography.sheetNavigationBar)
                         .fontWeight(.semibold)
                         .foregroundColor(AppColors.primaryText)
                     
@@ -45,28 +45,28 @@ struct EnterAmountView: View {
                     // Invisible button for centering
                     Button(action: {}) {
                         Image(systemName: "xmark")
-                            .font(.title2)
+                            .font(DesignTypography.sheetNavigationBar)
                             .foregroundColor(.clear)
                     }
                     .disabled(true)
                 }
-                .padding()
+                .padding(DesignSpacing.insetDefault)
                 
                 Spacer()
                 
                 // Amount Display
-                VStack(spacing: 8) {
+                VStack(spacing: DesignSpacing.compact) {
                     Text("Bill Total")
                         .font(.headline)
                         .foregroundColor(AppColors.secondaryText)
                     
-                    HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    HStack(alignment: .firstTextBaseline, spacing: DesignSpacing.tight) {
                         Text(currency.symbol)
-                            .font(.system(size: 48, weight: .light))
+                            .font(DesignTypography.keypadDisplay)
                             .foregroundColor(AppColors.primaryText)
                         
                         Text(displayString)
-                            .font(.system(size: 48, weight: .light))
+                            .font(DesignTypography.keypadDisplay)
                             .foregroundColor(AppColors.secondaryText)
                     }
                 }
@@ -81,45 +81,45 @@ struct EnterAmountView: View {
                         .font(.headline)
                         .foregroundColor(AppColors.buttonText)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 56)
+                        .frame(height: DesignRadius.primaryButtonHeight)
                         .background(AppColors.buttonBackground)
-                        .cornerRadius(16)
+                        .clipShape(Capsule(style: .continuous))
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 32)
+                .padding(.horizontal, DesignSpacing.sheetHorizontal)
+                .padding(.bottom, DesignSpacing.screenBottom)
                 
                 // Keypad
-                VStack(spacing: 12) {
+                VStack(spacing: DesignSpacing.related) {
                     // Row 1
-                    HStack(spacing: 12) {
+                    HStack(spacing: DesignSpacing.related) {
                         KeypadButton(title: "1", subtitle: "") { appendDigit("1") }
                         KeypadButton(title: "2", subtitle: "ABC") { appendDigit("2") }
                         KeypadButton(title: "3", subtitle: "DEF") { appendDigit("3") }
                     }
                     
                     // Row 2
-                    HStack(spacing: 12) {
+                    HStack(spacing: DesignSpacing.related) {
                         KeypadButton(title: "4", subtitle: "GHI") { appendDigit("4") }
                         KeypadButton(title: "5", subtitle: "JKL") { appendDigit("5") }
                         KeypadButton(title: "6", subtitle: "MNO") { appendDigit("6") }
                     }
                     
                     // Row 3
-                    HStack(spacing: 12) {
+                    HStack(spacing: DesignSpacing.related) {
                         KeypadButton(title: "7", subtitle: "PQRS") { appendDigit("7") }
                         KeypadButton(title: "8", subtitle: "TUV") { appendDigit("8") }
                         KeypadButton(title: "9", subtitle: "WXYZ") { appendDigit("9") }
                     }
                     
                     // Row 4
-                    HStack(spacing: 12) {
+                    HStack(spacing: DesignSpacing.related) {
                         KeypadButton(title: ".", subtitle: "") { appendDecimalPoint() }
                         KeypadButton(title: "0", subtitle: "") { appendDigit("0") }
                         KeypadButton(title: "", subtitle: "", icon: "delete.left") { deleteLastDigit() }
                     }
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 32)
+                .padding(.horizontal, DesignSpacing.sheetHorizontal)
+                .padding(.bottom, DesignSpacing.screenBottom)
             }
         }
         .onAppear {
@@ -234,14 +234,14 @@ struct KeypadButton: View {
     
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 4) {
+            VStack(spacing: DesignSpacing.tight) {
                 if let icon = icon {
                     Image(systemName: icon)
-                        .font(.title2)
+                        .font(DesignTypography.keypadKeyTitle)
                         .foregroundColor(AppColors.primaryText)
                 } else {
                     Text(title)
-                        .font(.title2)
+                        .font(DesignTypography.keypadKeyTitle)
                         .fontWeight(.medium)
                         .foregroundColor(AppColors.primaryText)
                     
@@ -253,9 +253,9 @@ struct KeypadButton: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 60)
+            .frame(height: DesignLayout.keypadRowHeight)
             .background(AppColors.cardBackground)
-            .cornerRadius(12)
+            .clipShape(RoundedRectangle(cornerRadius: DesignRadius.sheetControl, style: .continuous))
         }
     }
 }

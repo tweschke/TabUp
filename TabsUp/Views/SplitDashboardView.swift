@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct SplitDashboardView: View {
     @ObservedObject var viewModel: SplitViewModel
     var pagerSelectedPage: Binding<Int>
+    @Environment(\.colorScheme) private var colorScheme
     @State private var showEnterAmount = false
     @State private var showCurrencySettings = false
     @State private var showSplitBreakdown = false
@@ -35,62 +37,72 @@ struct SplitDashboardView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                AppColors.darkBackground
-                    .ignoresSafeArea()
+                DashboardCanvasBackground()
                 
                 ScrollView {
-                    VStack(spacing: 24) {
-                        // Header Section
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Split")
-                                    .font(.system(size: 36, weight: .bold))
-                                    .foregroundColor(AppColors.primaryText)
-                                
-                                Text("Let's divide that bill fairly")
-                                    .font(.subheadline)
-                                    .foregroundColor(AppColors.secondaryText)
-                            }
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                showCurrencySettings = true
-                            }) {
-                                Image(systemName: "gearshape.fill")
-                                    .font(.title2)
-                                    .foregroundColor(AppColors.primaryText)
-                                    .frame(width: 44, height: 44)
-                                    .background(AppColors.cardBackground)
-                                    .clipShape(Circle())
-                            }
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.top, 8)
+                    VStack(spacing: DesignSpacing.stackFlush) {
+                        // Title, subtitle, menu, and pager share one compact column (avoids 24pt gap between subtitle and dots).
+                        VStack(spacing: DesignSpacing.compact) {
+                            HStack(alignment: .top, spacing: DesignSpacing.related) {
+                                VStack(alignment: .leading, spacing: DesignSpacing.titleGroup) {
+                                    Text("Split")
+                                        .font(DesignTypography.dashboardScreenTitle)
+                                        .foregroundColor(AppColors.primaryText)
 
-                        PagerIndicatorView(selection: pagerSelectedPage, pageCount: 2)
-                            .padding(.top, 6)
-                            .padding(.horizontal, 20)
-                        
-                        // Total Bill Card
+                                    Text("Let's divide that bill fairly")
+                                        .font(.subheadline)
+                                        .foregroundColor(
+                                            colorScheme == .light
+                                                ? AppColors.primaryText.opacity(DesignOpacity.subtitleOnLight)
+                                                : AppColors.secondaryText
+                                        )
+                                }
+
+                                Spacer(minLength: DesignSpacing.spacerMinCollapsed)
+
+                                Button(action: {
+                                    showCurrencySettings = true
+                                }) {
+                                    Image(systemName: "line.3.horizontal")
+                                        .font(DesignTypography.dashboardBarButton)
+                                        .foregroundColor(AppColors.primaryText)
+                                        .frame(width: DesignLayout.touchTarget, height: DesignLayout.touchTarget)
+                                        .dashboardCircularIconSurface()
+                                }
+                                .buttonStyle(DashboardSubtlePressButtonStyle())
+                                .accessibilityLabel("Settings")
+                            }
+
+                            PagerIndicatorView(selection: pagerSelectedPage, pageCount: 2)
+                        }
+                        .padding(.horizontal, DesignSpacing.screenHorizontal)
+                        .padding(.top, DesignSpacing.headerTop)
+
+                        // Total Bill Card — `DesignSpacing.pagerToFirstCard` is tighter than `section` (dots → card).
                         TotalBillCard(
                             amount: viewModel.billTotal,
                             currency: viewModel.selectedCurrency,
                             onTap: {
                                 showEnterAmount = true
+                            },
+                            onCurrencyTap: {
+                                showCurrencySettings = true
                             }
                         )
-                        .padding(.horizontal, 20)
-                        
+                        .padding(.horizontal, DesignSpacing.screenHorizontal)
+                        .padding(.top, DesignSpacing.pagerToFirstCard)
+
+                        VStack(spacing: DesignSpacing.section) {
                         // Tip Selection
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: DesignSpacing.related) {
                             Text("Add Tip")
                                 .font(.headline)
+                                .fontWeight(.semibold)
                                 .foregroundColor(AppColors.primaryText)
-                                .padding(.horizontal, 20)
+                                .padding(.horizontal, DesignSpacing.screenHorizontal)
                             
                             ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 12) {
+                                HStack(spacing: DesignSpacing.related) {
                                     ForEach(tipOptions, id: \.self) { tip in
                                         TipButton(
                                             title: tip == 0 ? "No Tip" : "\(Int(tip))%",
@@ -110,7 +122,7 @@ struct SplitDashboardView: View {
                                         }
                                     )
                                 }
-                                .padding(.horizontal, 20)
+                                .padding(.horizontal, DesignSpacing.screenHorizontal)
                             }
                         }
                         
@@ -124,18 +136,20 @@ struct SplitDashboardView: View {
                                 viewModel.updateNumberOfPeople(viewModel.numberOfPeople + 1)
                             }
                         )
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, DesignSpacing.screenHorizontal)
                         
                         // Split Type Toggle
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: DesignSpacing.related) {
                             Text("Split Type")
                                 .font(.headline)
+                                .fontWeight(.semibold)
                                 .foregroundColor(AppColors.primaryText)
-                                .padding(.horizontal, 20)
+                                .padding(.horizontal, DesignSpacing.screenHorizontal)
                             
-                            HStack(spacing: 12) {
+                            HStack(spacing: DesignSpacing.related) {
                                 SplitTypeButton(
                                     title: "Even Split",
+                                    systemImage: "person.2.fill",
                                     isSelected: viewModel.splitType == .even,
                                     action: {
                                         viewModel.splitType = .even
@@ -144,6 +158,7 @@ struct SplitDashboardView: View {
                                 
                                 SplitTypeButton(
                                     title: "% Weighted",
+                                    systemImage: "chart.pie.fill",
                                     isSelected: viewModel.splitType == .weighted,
                                     action: {
                                         viewModel.splitType = .weighted
@@ -151,7 +166,7 @@ struct SplitDashboardView: View {
                                     }
                                 )
                             }
-                            .padding(.horizontal, 20)
+                            .padding(.horizontal, DesignSpacing.screenHorizontal)
                         }
                         
                         // Result Display
@@ -163,7 +178,7 @@ struct SplitDashboardView: View {
                                     tipAmount: viewModel.tipAmount,
                                     tipType: viewModel.tipType
                                 )
-                                .padding(.horizontal, 20)
+                                .padding(.horizontal, DesignSpacing.screenHorizontal)
                             } else {
                                 WeightedSplitResultCard(
                                     range: viewModel.weightedRange,
@@ -174,7 +189,7 @@ struct SplitDashboardView: View {
                                         showSplitBreakdown = true
                                     }
                                 )
-                                .padding(.horizontal, 20)
+                                .padding(.horizontal, DesignSpacing.screenHorizontal)
                                 .onAppear {
                                     // Ensure people are initialized for weighted split
                                     if viewModel.people.isEmpty {
@@ -195,15 +210,14 @@ struct SplitDashboardView: View {
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
                                 }
-                                .foregroundColor(AppColors.buttonText)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 56)
-                                .background(AppColors.buttonBackground)
-                                .cornerRadius(16)
+                                .dashboardPrimaryCTA()
                             }
-                            .padding(.horizontal, 20)
-                            .padding(.bottom, 32)
+                            .buttonStyle(DashboardSubtlePressButtonStyle())
+                            .padding(.horizontal, DesignSpacing.screenHorizontal)
+                            .padding(.bottom, DesignSpacing.screenBottom)
                         }
+                        }
+                        .padding(.top, DesignSpacing.section)
                     }
                 }
             }
@@ -245,46 +259,90 @@ struct SplitDashboardView: View {
     }
 }
 
+// MARK: - Total Bill card surface (slightly stronger lift than standard dashboard cards)
+
+private struct TotalBillCardSurfaceModifier: ViewModifier {
+    var cornerRadius: CGFloat = DesignRadius.card
+
+    func body(content: Content) -> some View {
+        content
+            .background(AppColors.cardBackground)
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .strokeBorder(AppColors.borderSubtle, lineWidth: DesignStroke.hairline)
+            )
+            .designSplitPrimaryCardShadow()
+    }
+}
+
 struct TotalBillCard: View {
     let amount: Double
     let currency: Currency
     let onTap: () -> Void
-    
+    let onCurrencyTap: () -> Void
+
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 16) {
-                // Green Currency Code Icon
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(AppColors.greenIcon)
-                    .frame(width: 60, height: 40)
-                    .overlay(
-                        Text(currency.code)
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                            .foregroundColor(.white)
-                    )
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Total Bill")
-                        .font(.subheadline)
-                        .foregroundColor(AppColors.secondaryText)
-                    
-                    Text(String(format: "%@%.2f", currency.symbol, amount))
-                        .font(.system(size: 28, weight: .bold))
-                        .foregroundColor(AppColors.primaryText)
-                }
-                
-                Spacer()
+        HStack(spacing: DesignSpacing.totalBillCore) {
+            Button(action: onCurrencyTap) {
+                currencyPillLabel
             }
-            .padding()
-            .background(AppColors.cardBackground)
-            .cornerRadius(16)
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
-            )
+            .buttonStyle(DashboardSubtlePressButtonStyle())
+            .accessibilityLabel("Change currency, current \(currency.code)")
+
+            Button(action: onTap) {
+                HStack(spacing: DesignSpacing.stackFlush) {
+                    VStack(alignment: .leading, spacing: DesignSpacing.inlineTight) {
+                        Text("Total Bill")
+                            .font(.footnote)
+                            .fontWeight(.medium)
+                            .foregroundColor(AppColors.secondaryText)
+
+                        Text(String(format: "%@%.2f", currency.symbol, amount))
+                            .font(DesignTypography.totalBillHero)
+                            .foregroundColor(AppColors.primaryText)
+                    }
+
+                    Spacer(minLength: DesignSpacing.compact)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(DashboardSubtlePressButtonStyle())
+            .accessibilityLabel("Edit total bill amount")
         }
-        .buttonStyle(.plain)
+        .padding(DesignSpacing.screenHorizontal)
+        .modifier(TotalBillCardSurfaceModifier())
+    }
+
+    /// Same active treatment as Add Tip (selected) + Split Type: `tipChipSelectedGradient`, teal border, `DesignRadius.tipChip`.
+    @ViewBuilder
+    private var currencyPillLabel: some View {
+        let core = HStack(spacing: DesignSpacing.inlineTight) {
+            Text(currency.code)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundColor(AppColors.primaryText)
+
+            Image(systemName: "chevron.down")
+                .font(.caption2.weight(.semibold))
+                .foregroundColor(AppColors.primaryText.opacity(DesignOpacity.currencyChevronMuted))
+        }
+        .frame(width: DesignLayout.currencyPillWidth, height: DesignLayout.currencyPillHeight)
+        .background(AppColors.tipChipSelectedGradient(colorScheme: colorScheme))
+        .clipShape(RoundedRectangle(cornerRadius: DesignRadius.tipChip, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignRadius.tipChip, style: .continuous)
+                .strokeBorder(AppColors.splitTypePillBorderTeal, lineWidth: DesignStroke.chipBorder)
+        )
+
+        if colorScheme == .light {
+            core
+                .designCurrencyPillShadow()
+        } else {
+            core
+        }
     }
 }
 
@@ -292,18 +350,58 @@ struct TipButton: View {
     let title: String
     let isSelected: Bool
     let action: () -> Void
-    
+
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundColor(isSelected ? AppColors.buttonText : AppColors.primaryText)
-                .padding(.horizontal, 20)
-                .frame(height: 44)
-                .background(isSelected ? AppColors.buttonBackground : AppColors.cardBackground)
-                .cornerRadius(12)
+            tipLabel
         }
+        .buttonStyle(DashboardSubtlePressButtonStyle())
+    }
+
+    @ViewBuilder
+    private var tipLabel: some View {
+        if colorScheme == .light {
+            tipLabelBase
+                .shadow(
+                    color: DesignElevation.shadowBase.opacity(isSelected ? DesignOpacity.tipChipShadowUpperSelected : DesignOpacity.tipChipShadowUpperUnselected),
+                    radius: isSelected ? DesignElevation.TipChip.upperRadiusSelected : DesignElevation.TipChip.upperRadiusUnselected,
+                    x: 0,
+                    y: DesignElevation.TipChip.upperY
+                )
+                .shadow(color: DesignElevation.shadowBase.opacity(DesignOpacity.tipChipShadowLower), radius: DesignElevation.TipChip.lowerRadius, x: 0, y: DesignElevation.TipChip.lowerY)
+        } else {
+            tipLabelBase
+        }
+    }
+
+    private var tipLabelBase: some View {
+        Text(title)
+            .font(.subheadline)
+            .fontWeight(.medium)
+            .foregroundColor(AppColors.primaryText)
+            .padding(.horizontal, DesignSpacing.screenHorizontalWide)
+            .frame(height: DesignLayout.touchTarget)
+            .background(chipBackground)
+            .clipShape(RoundedRectangle(cornerRadius: DesignRadius.tipChip, style: .continuous))
+            .overlay(chipOverlay)
+    }
+
+    private var chipBackground: some ShapeStyle {
+        if isSelected {
+            return AnyShapeStyle(AppColors.tipChipSelectedGradient(colorScheme: colorScheme))
+        }
+        return AnyShapeStyle(AppColors.tipChipInactiveFill(colorScheme: colorScheme))
+    }
+
+    @ViewBuilder
+    private var chipOverlay: some View {
+        RoundedRectangle(cornerRadius: DesignRadius.tipChip, style: .continuous)
+            .strokeBorder(
+                isSelected ? AppColors.splitTypePillBorderTeal : Color.clear,
+                lineWidth: isSelected ? DesignStroke.chipBorder : DesignStroke.hidden
+            )
     }
 }
 
@@ -312,18 +410,20 @@ struct NumberOfPeopleCard: View {
     let onDecrement: () -> Void
     let onIncrement: () -> Void
     
+    @Environment(\.colorScheme) private var colorScheme
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: DesignSpacing.subsection) {
             // First Row: Icon and Label
-            HStack(spacing: 12) {
+            HStack(spacing: DesignSpacing.related) {
                 // Purple People Icon
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: DesignRadius.iconTile, style: .continuous)
                     .fill(AppColors.purpleIcon)
-                    .frame(width: 40, height: 40)
+                    .frame(width: DesignLayout.peopleIconTile, height: DesignLayout.peopleIconTile)
                     .overlay(
                         Image(systemName: "person.2.fill")
-                            .font(.title3)
-                            .foregroundColor(.white)
+                            .font(DesignTypography.cardInlineIcon)
+                            .foregroundColor(AppColors.buttonText)
                     )
                 
                 // Label
@@ -341,64 +441,174 @@ struct NumberOfPeopleCard: View {
                 // Decrement Button
                 Button(action: onDecrement) {
                     Image(systemName: "minus")
-                        .font(.headline)
-                        .foregroundColor(AppColors.primaryText)
-                        .frame(width: 44, height: 44)
-                        .background(AppColors.purpleIcon.opacity(0.3))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .font(.headline.weight(.semibold))
+                        .foregroundColor(stepperIconColor)
+                        .frame(width: DesignLayout.touchTarget, height: DesignLayout.touchTarget)
+                        .background(stepperFill)
+                        .clipShape(RoundedRectangle(cornerRadius: DesignRadius.stepper, style: .continuous))
                 }
+                .buttonStyle(DashboardSubtlePressButtonStyle())
                 
                 // Count Display
-                VStack(spacing: 2) {
+                VStack(spacing: DesignSpacing.stepperCaption) {
                     Text("\(count)")
-                        .font(.system(size: 32, weight: .bold))
+                        .font(DesignTypography.largeMetric)
                         .foregroundColor(AppColors.primaryText)
                     Text("people")
                         .font(.caption)
                         .foregroundColor(AppColors.secondaryText)
                 }
-                .frame(minWidth: 80)
-                .padding(.horizontal, 24)
+                .frame(minWidth: DesignLayout.stepperCountMinWidth)
+                .padding(.horizontal, DesignSpacing.sheetHorizontal)
                 
                 // Increment Button
                 Button(action: onIncrement) {
                     Image(systemName: "plus")
-                        .font(.headline)
-                        .foregroundColor(AppColors.primaryText)
-                        .frame(width: 44, height: 44)
-                        .background(AppColors.purpleIcon.opacity(0.3))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .font(.headline.weight(.semibold))
+                        .foregroundColor(stepperIconColor)
+                        .frame(width: DesignLayout.touchTarget, height: DesignLayout.touchTarget)
+                        .background(stepperFill)
+                        .clipShape(RoundedRectangle(cornerRadius: DesignRadius.stepper, style: .continuous))
                 }
+                .buttonStyle(DashboardSubtlePressButtonStyle())
                 
                 Spacer()
             }
         }
-        .padding()
-        .background(AppColors.cardBackground)
-        .cornerRadius(16)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.white.opacity(0.1), lineWidth: 1)
-        )
+        .padding(DesignSpacing.insetDefault)
+        .splitDashboardPrimaryCardSurface()
+    }
+    
+    private var stepperFill: Color {
+        colorScheme == .light
+            ? AppColors.stepperPurpleTintLight
+            : AppColors.purpleIcon.opacity(DesignOpacity.stepperPurpleDark)
+    }
+
+    private var stepperIconColor: Color {
+        colorScheme == .light ? AppColors.stepperIconTint : AppColors.primaryText
     }
 }
 
 struct SplitTypeButton: View {
     let title: String
+    let systemImage: String
     let isSelected: Bool
     let action: () -> Void
-    
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var isEvenSplit: Bool { title == "Even Split" }
+
     var body: some View {
         Button(action: action) {
+            splitTypeLabel
+        }
+        .buttonStyle(DashboardSubtlePressButtonStyle())
+    }
+
+    @ViewBuilder
+    private var splitTypeLabel: some View {
+        if colorScheme == .light && !isSelected {
+            splitTypeLabelBase
+                .shadow(color: DesignElevation.shadowBase.opacity(DesignElevation.SplitTypeInactive.upperOpacity), radius: DesignElevation.SplitTypeInactive.upperRadius, x: 0, y: DesignElevation.SplitTypeInactive.upperY)
+                .shadow(color: DesignElevation.shadowBase.opacity(DesignElevation.SplitTypeInactive.lowerOpacity), radius: DesignElevation.SplitTypeInactive.lowerRadius, x: 0, y: DesignElevation.SplitTypeInactive.lowerY)
+        } else {
+            splitTypeLabelBase
+        }
+    }
+
+    private var splitTypeLabelBase: some View {
+        HStack(spacing: DesignSpacing.compact) {
+            splitLeadingIcon
             Text(title)
                 .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundColor(isSelected ? AppColors.buttonText : AppColors.primaryText)
-                .frame(maxWidth: .infinity)
-                .frame(height: 44)
-                .background(isSelected ? AppColors.buttonBackground : AppColors.cardBackground)
-                .cornerRadius(12)
+                .fontWeight(.semibold)
+                .foregroundColor(AppColors.primaryText)
         }
+        .frame(maxWidth: .infinity)
+        .frame(height: DesignLayout.splitTypeRowHeight)
+        .padding(.horizontal, DesignLayout.splitTypeHorizontalInset)
+        .background(splitBackground)
+        .clipShape(RoundedRectangle(cornerRadius: DesignRadius.splitTypeSegment, style: .continuous))
+        .overlay(splitOverlay)
+    }
+
+    @ViewBuilder
+    private var splitLeadingIcon: some View {
+        if isEvenSplit {
+            evenSplitLeadingIcon
+        } else {
+            weightedLeadingIcon
+        }
+    }
+
+    @ViewBuilder
+    private var evenSplitLeadingIcon: some View {
+        if isSelected {
+            if UIImage(named: "SplitTypeEvenPeople") != nil {
+                Image("SplitTypeEvenPeople")
+                    .resizable()
+                    .interpolation(.high)
+                    .scaledToFit()
+                    .frame(width: DesignLayout.splitTypeIconWidth, height: DesignLayout.splitTypeIconHeight)
+                    .accessibilityHidden(true)
+            } else {
+                EvenSplitPeopleLayeredFallback()
+            }
+        } else {
+            Image(systemName: "person.2.fill")
+                .font(.subheadline.weight(.semibold))
+                .foregroundColor(AppColors.primaryText)
+        }
+    }
+
+    @ViewBuilder
+    private var weightedLeadingIcon: some View {
+        Image(systemName: "chart.pie.fill")
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(
+                isSelected
+                    ? AnyShapeStyle(AppColors.brandTintGradient(colorScheme: colorScheme))
+                    : AnyShapeStyle(AppColors.primaryText)
+            )
+    }
+
+    private var splitBackground: some ShapeStyle {
+        if isSelected {
+            return AnyShapeStyle(AppColors.splitTypePillSelectedGradient(colorScheme: colorScheme))
+        }
+        return AnyShapeStyle(AppColors.splitTypeUnselectedFill(colorScheme: colorScheme))
+    }
+
+    @ViewBuilder
+    private var splitOverlay: some View {
+        if isSelected {
+            RoundedRectangle(cornerRadius: DesignRadius.splitTypeSegment, style: .continuous)
+                .strokeBorder(AppColors.splitTypePillBorderTeal, lineWidth: DesignStroke.splitTypeSelected)
+        } else if colorScheme == .dark {
+            RoundedRectangle(cornerRadius: DesignRadius.splitTypeSegment, style: .continuous)
+                .strokeBorder(AppColors.splitTypeInactiveBorderColor, lineWidth: DesignStroke.hairline)
+        }
+    }
+}
+
+// MARK: - Even Split icon (fallback until `SplitTypeEvenPeople` asset is added)
+
+private struct EvenSplitPeopleLayeredFallback: View {
+    var body: some View {
+        ZStack {
+            Image(systemName: "person.fill")
+                .font(DesignTypography.evenSplitIconRear)
+                .foregroundColor(AppColors.splitTypeEvenIconRear)
+                .offset(x: DesignLayout.evenIconRearOffsetX, y: DesignLayout.evenIconRearOffsetY)
+            Image(systemName: "person.fill")
+                .font(DesignTypography.evenSplitIconFront)
+                .foregroundColor(AppColors.splitTypePillBorderTeal)
+                .offset(x: DesignLayout.evenIconFrontOffsetX, y: DesignLayout.evenIconFrontOffsetY)
+        }
+        .frame(width: DesignLayout.splitTypeIconWidth, height: DesignLayout.splitTypeIconHeight)
+        .accessibilityHidden(true)
     }
 }
 
@@ -407,32 +617,35 @@ struct EvenSplitResultCard: View {
     let currency: Currency
     let tipAmount: Double
     let tipType: TipType
-    
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Per person (even)")
-                .font(.caption)
-                .foregroundColor(AppColors.secondaryText)
-            
-            Text(String(format: "%@%.2f", currency.symbol, amount))
-                .font(.system(size: 32, weight: .bold))
-                .foregroundColor(AppColors.primaryText)
-            
-            // Tip information line
-            Text(tipInformationText)
-                .font(.caption)
-                .foregroundColor(AppColors.secondaryText)
+        HStack(alignment: .center, spacing: DesignSpacing.resultRow) {
+            VStack(alignment: .leading, spacing: DesignSpacing.compact) {
+                Text("Per person (even)")
+                    .font(.caption)
+                    .foregroundColor(AppColors.secondaryText)
+
+                Text(String(format: "%@%.2f", currency.symbol, amount))
+                    .font(DesignTypography.largeMetric)
+                    .foregroundColor(AppColors.primaryText)
+
+                Text(tipInformationText)
+                    .font(.caption)
+                    .foregroundColor(AppColors.secondaryText)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            Image("PerPersonBillIcon")
+                .resizable()
+                .interpolation(.high)
+                .scaledToFit()
+                .frame(width: DesignLayout.perPersonBillIcon, height: DesignLayout.perPersonBillIcon)
+                .accessibilityHidden(true)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(AppColors.cardBackground)
-        .cornerRadius(16)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.white.opacity(0.1), lineWidth: 1)
-        )
+        .padding(DesignSpacing.insetDefault)
+        .splitDashboardPrimaryCardSurface()
     }
-    
+
     private var tipInformationText: String {
         if tipAmount == 0 {
             return "Includes no tip"
@@ -457,14 +670,14 @@ struct WeightedSplitResultCard: View {
     let onCustomize: () -> Void
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DesignSpacing.subsection) {
+            VStack(alignment: .leading, spacing: DesignSpacing.compact) {
                 Text("Range (weighted)")
                     .font(.caption)
                     .foregroundColor(AppColors.secondaryText)
                 
                 Text(String(format: "%@%.2f - %@%.2f", currency.symbol, range.min, currency.symbol, range.max))
-                    .font(.system(size: 32, weight: .bold))
+                    .font(DesignTypography.largeMetric)
                     .foregroundColor(AppColors.primaryText)
                 
                 // Tip information line
@@ -480,21 +693,13 @@ struct WeightedSplitResultCard: View {
                     Image(systemName: "chevron.right")
                         .font(.caption)
                 }
-                .foregroundColor(AppColors.buttonText)
-                .frame(maxWidth: .infinity)
-                .frame(height: 56)
-                .background(AppColors.buttonBackground)
-                .cornerRadius(16)
+                .dashboardPrimaryCTA()
             }
+            .buttonStyle(DashboardSubtlePressButtonStyle())
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(AppColors.cardBackground)
-        .cornerRadius(16)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.white.opacity(0.1), lineWidth: 1)
-        )
+        .padding(DesignSpacing.insetDefault)
+        .splitDashboardPrimaryCardSurface()
     }
     
     private var tipInformationText: String {
@@ -530,24 +735,24 @@ struct CustomTipView: View {
     
     var body: some View {
         ZStack {
-            AppColors.darkBackground
+            AppColors.primaryBackground
                 .ignoresSafeArea()
             
-            VStack(spacing: 0) {
+            VStack(spacing: DesignSpacing.stackFlush) {
                 // Header
                 HStack {
                     Button(action: {
                         isPresented = false
                     }) {
                         Image(systemName: "xmark")
-                            .font(.title2)
+                            .font(DesignTypography.sheetNavigationBar)
                             .foregroundColor(AppColors.primaryText)
                     }
                     
                     Spacer()
                     
                     Text("Custom Tip")
-                        .font(.title2)
+                        .font(DesignTypography.sheetNavigationBar)
                         .fontWeight(.semibold)
                         .foregroundColor(AppColors.primaryText)
                     
@@ -556,17 +761,17 @@ struct CustomTipView: View {
                     // Invisible button for centering
                     Button(action: {}) {
                         Image(systemName: "xmark")
-                            .font(.title2)
+                            .font(DesignTypography.sheetNavigationBar)
                             .foregroundColor(.clear)
                     }
                     .disabled(true)
                 }
-                .padding()
+                .padding(DesignSpacing.insetDefault)
                 
                 Spacer()
                 
                 // Mode Toggle
-                HStack(spacing: 12) {
+                HStack(spacing: DesignSpacing.related) {
                     Button(action: {
                         tipMode = .percentage
                         resetInput()
@@ -575,10 +780,17 @@ struct CustomTipView: View {
                             .font(.headline)
                             .foregroundColor(tipMode == .percentage ? AppColors.buttonText : AppColors.primaryText)
                             .frame(maxWidth: .infinity)
-                            .frame(height: 44)
-                            .background(tipMode == .percentage ? AppColors.buttonBackground : AppColors.cardBackground)
-                            .cornerRadius(12)
+                            .frame(height: DesignLayout.touchTarget)
+                            .background(tipMode == .percentage ? AppColors.buttonBackground : AppColors.chipInactiveBackground)
+                            .clipShape(RoundedRectangle(cornerRadius: DesignRadius.sheetControl, style: .continuous))
+                            .overlay {
+                                if tipMode != .percentage {
+                                    RoundedRectangle(cornerRadius: DesignRadius.sheetControl, style: .continuous)
+                                        .strokeBorder(AppColors.borderSubtle.opacity(DesignOpacity.borderSubtleSheet), lineWidth: DesignStroke.hairline)
+                                }
+                            }
                     }
+                    .buttonStyle(.plain)
                     
                     Button(action: {
                         tipMode = .fixedAmount
@@ -588,39 +800,46 @@ struct CustomTipView: View {
                             .font(.headline)
                             .foregroundColor(tipMode == .fixedAmount ? AppColors.buttonText : AppColors.primaryText)
                             .frame(maxWidth: .infinity)
-                            .frame(height: 44)
-                            .background(tipMode == .fixedAmount ? AppColors.buttonBackground : AppColors.cardBackground)
-                            .cornerRadius(12)
+                            .frame(height: DesignLayout.touchTarget)
+                            .background(tipMode == .fixedAmount ? AppColors.buttonBackground : AppColors.chipInactiveBackground)
+                            .clipShape(RoundedRectangle(cornerRadius: DesignRadius.sheetControl, style: .continuous))
+                            .overlay {
+                                if tipMode != .fixedAmount {
+                                    RoundedRectangle(cornerRadius: DesignRadius.sheetControl, style: .continuous)
+                                        .strokeBorder(AppColors.borderSubtle.opacity(DesignOpacity.borderSubtleSheet), lineWidth: DesignStroke.hairline)
+                                }
+                            }
                     }
+                    .buttonStyle(.plain)
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 24)
+                .padding(.horizontal, DesignSpacing.sheetHorizontal)
+                .padding(.top, DesignSpacing.sheetSectionTop)
                 
                 // Amount Display
-                VStack(spacing: 8) {
+                VStack(spacing: DesignSpacing.compact) {
                     Text(tipMode == .percentage ? "Tip Percentage" : "Tip Amount")
                         .font(.headline)
                         .foregroundColor(AppColors.secondaryText)
                     
-                    HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    HStack(alignment: .firstTextBaseline, spacing: DesignSpacing.tight) {
                         if tipMode == .fixedAmount {
                             Text(viewModel.selectedCurrency.symbol)
-                                .font(.system(size: 48, weight: .light))
+                                .font(DesignTypography.keypadDisplay)
                                 .foregroundColor(AppColors.primaryText)
                         }
                         
                         Text(displayString)
-                            .font(.system(size: 48, weight: .light))
+                            .font(DesignTypography.keypadDisplay)
                             .foregroundColor(AppColors.secondaryText)
                         
                         if tipMode == .percentage {
                             Text("%")
-                                .font(.system(size: 48, weight: .light))
+                                .font(DesignTypography.keypadDisplay)
                                 .foregroundColor(AppColors.primaryText)
                         }
                     }
                 }
-                .padding(.top, 32)
+                .padding(.top, DesignSpacing.sheetDisplayTop)
                 
                 Spacer()
                 
@@ -630,40 +849,37 @@ struct CustomTipView: View {
                 }) {
                     Text("Confirm Tip")
                         .font(.headline)
-                        .foregroundColor(AppColors.buttonText)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .background(AppColors.buttonBackground)
-                        .cornerRadius(16)
+                        .dashboardPrimaryCTA()
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 32)
+                .buttonStyle(DashboardSubtlePressButtonStyle())
+                .padding(.horizontal, DesignSpacing.sheetHorizontal)
+                .padding(.bottom, DesignSpacing.screenBottom)
                 
                 // Keypad
-                VStack(spacing: 12) {
+                VStack(spacing: DesignSpacing.related) {
                     // Row 1
-                    HStack(spacing: 12) {
+                    HStack(spacing: DesignSpacing.related) {
                         KeypadButton(title: "1", subtitle: "") { appendDigit("1") }
                         KeypadButton(title: "2", subtitle: "") { appendDigit("2") }
                         KeypadButton(title: "3", subtitle: "") { appendDigit("3") }
                     }
                     
                     // Row 2
-                    HStack(spacing: 12) {
+                    HStack(spacing: DesignSpacing.related) {
                         KeypadButton(title: "4", subtitle: "") { appendDigit("4") }
                         KeypadButton(title: "5", subtitle: "") { appendDigit("5") }
                         KeypadButton(title: "6", subtitle: "") { appendDigit("6") }
                     }
                     
                     // Row 3
-                    HStack(spacing: 12) {
+                    HStack(spacing: DesignSpacing.related) {
                         KeypadButton(title: "7", subtitle: "") { appendDigit("7") }
                         KeypadButton(title: "8", subtitle: "") { appendDigit("8") }
                         KeypadButton(title: "9", subtitle: "") { appendDigit("9") }
                     }
                     
                     // Row 4
-                    HStack(spacing: 12) {
+                    HStack(spacing: DesignSpacing.related) {
                         if tipMode == .fixedAmount {
                             KeypadButton(title: ".", subtitle: "") { appendDecimalPoint() }
                         } else {
@@ -675,8 +891,8 @@ struct CustomTipView: View {
                         KeypadButton(title: "", subtitle: "", icon: "delete.left") { backspace() }
                     }
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 32)
+                .padding(.horizontal, DesignSpacing.sheetHorizontal)
+                .padding(.bottom, DesignSpacing.screenBottom)
             }
         }
         .onAppear {

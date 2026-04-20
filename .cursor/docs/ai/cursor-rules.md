@@ -4,6 +4,7 @@ These rules apply to all AI-assisted work in this repository.
 
 ## Product & design
 
+- **Design system (single source of truth):** For colours, typography, spacing, components, and AI workflow for UI work, follow [Tabs Up Design System & Cursor Guide](../design/Tabs-Up-Design-System-And-Cursor-Guide.md).
 - **No redesign** of existing screens unless the task explicitly asks for visual or structural changes.
 - **No feature invention**: implement only what is described in the task, issue, or linked plan. If something is ambiguous, ask or leave a short note—do not add “nice to have” behaviour.
 

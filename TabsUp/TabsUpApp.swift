@@ -9,10 +9,16 @@ import SwiftUI
 
 @main
 struct TabsUpApp: App {
+    @AppStorage(AppAppearance.storageKey) private var appearanceRawValue: String = AppAppearance.system.rawValue
+
+    private var appAppearance: AppAppearance {
+        AppAppearance(rawValue: appearanceRawValue) ?? .system
+    }
+
     var body: some Scene {
         WindowGroup {
             DashboardPagerView()
-                .preferredColorScheme(.dark)
+                .preferredColorScheme(appAppearance.preferredColorScheme)
         }
     }
 }

@@ -20,7 +20,7 @@ struct SplitBreakdownView: View {
     
     var body: some View {
         ZStack {
-            AppColors.darkBackground
+            AppColors.primaryBackground
                 .ignoresSafeArea()
             
             if viewModel.splitType == .even {
@@ -79,57 +79,57 @@ struct SplitBreakdownView: View {
     // MARK: - Even Split View
     
     private var evenSplitView: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: DesignSpacing.stackFlush) {
             // Total Bill Card
-            VStack(spacing: 8) {
+            VStack(spacing: DesignSpacing.compact) {
                 Text("Total Bill")
                     .font(.headline)
                     .foregroundColor(AppColors.secondaryText)
                 
                 Text(formatCurrency(viewModel.totalWithTip))
-                    .font(.system(size: 36, weight: .bold))
+                    .font(DesignTypography.dashboardScreenTitle)
                     .foregroundColor(AppColors.primaryText)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 24)
+            .padding(.vertical, DesignSpacing.section)
             .background(AppColors.cardBackground)
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: DesignRadius.card, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                RoundedRectangle(cornerRadius: DesignRadius.card, style: .continuous)
+                    .stroke(AppColors.borderSubtle, lineWidth: DesignStroke.hairline)
             )
-            .padding(.horizontal, 20)
-            .padding(.top, 20)
+            .padding(.horizontal, DesignSpacing.screenHorizontal)
+            .padding(.top, DesignSpacing.screenHorizontal)
             
             // Per Person Amount Card
-            VStack(spacing: 8) {
+            VStack(spacing: DesignSpacing.compact) {
                 Text("Per Person")
                     .font(.headline)
                     .foregroundColor(AppColors.secondaryText)
                 
                 Text(formatCurrency(viewModel.perPersonEven))
-                    .font(.system(size: 32, weight: .bold))
+                    .font(DesignTypography.largeMetric)
                     .foregroundColor(AppColors.primaryText)
                 
                 Text("Split evenly among \(viewModel.numberOfPeople) \(viewModel.numberOfPeople == 1 ? "person" : "people")")
                     .font(.caption)
                     .foregroundColor(AppColors.secondaryText)
-                    .padding(.top, 4)
+                    .padding(.top, DesignSpacing.tight)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 24)
+            .padding(.vertical, DesignSpacing.section)
             .background(AppColors.cardBackground)
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: DesignRadius.card, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                RoundedRectangle(cornerRadius: DesignRadius.card, style: .continuous)
+                    .stroke(AppColors.borderSubtle, lineWidth: DesignStroke.hairline)
             )
-            .padding(.horizontal, 20)
-            .padding(.top, 24)
+            .padding(.horizontal, DesignSpacing.screenHorizontal)
+            .padding(.top, DesignSpacing.section)
             
             // People List (Read-only)
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: DesignSpacing.subsection) {
                     ForEach(viewModel.people) { person in
                         EvenSplitPersonCard(
                             person: person,
@@ -138,8 +138,8 @@ struct SplitBreakdownView: View {
                         )
                     }
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 24)
+                .padding(.horizontal, DesignSpacing.screenHorizontal)
+                .padding(.top, DesignSpacing.section)
             }
             
             Spacer()
@@ -149,7 +149,7 @@ struct SplitBreakdownView: View {
                 viewModel.startNewSplit()
                 dismiss()
             }) {
-                HStack(spacing: 8) {
+                HStack(spacing: DesignSpacing.compact) {
                     Image(systemName: "arrow.clockwise")
                         .font(.caption)
                     Text("Start New Split")
@@ -157,13 +157,13 @@ struct SplitBreakdownView: View {
                 }
                 .foregroundColor(AppColors.secondaryText)
             }
-            .padding(.bottom, 8)
+            .padding(.bottom, DesignSpacing.listRowCompact)
             
             // Done Button
             Button(action: {
                 dismiss()
             }) {
-                HStack(spacing: 8) {
+                HStack(spacing: DesignSpacing.compact) {
                     Image(systemName: "checkmark")
                         .font(.headline)
                     Text("Done")
@@ -171,42 +171,42 @@ struct SplitBreakdownView: View {
                 }
                 .foregroundColor(AppColors.buttonText)
                 .frame(maxWidth: .infinity)
-                .frame(height: 56)
+                .frame(height: DesignRadius.primaryButtonHeight)
                 .background(AppColors.buttonBackground)
-                .cornerRadius(16)
+                .clipShape(Capsule(style: .continuous))
             }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 32)
+            .padding(.horizontal, DesignSpacing.screenHorizontal)
+            .padding(.bottom, DesignSpacing.screenBottom)
         }
     }
     
     // MARK: - Weighted Split View
     
     private var weightedSplitView: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: DesignSpacing.stackFlush) {
             // Total Bill Card
-            VStack(spacing: 8) {
+            VStack(spacing: DesignSpacing.compact) {
                 Text("Total Bill")
                     .font(.headline)
                     .foregroundColor(AppColors.secondaryText)
                 
                 Text(formatCurrency(viewModel.totalWithTip))
-                    .font(.system(size: 36, weight: .bold))
+                    .font(DesignTypography.dashboardScreenTitle)
                     .foregroundColor(AppColors.primaryText)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 24)
+            .padding(.vertical, DesignSpacing.section)
             .background(AppColors.cardBackground)
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: DesignRadius.card, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                RoundedRectangle(cornerRadius: DesignRadius.card, style: .continuous)
+                    .stroke(AppColors.borderSubtle, lineWidth: DesignStroke.hairline)
             )
-            .padding(.horizontal, 20)
-            .padding(.top, 20)
+            .padding(.horizontal, DesignSpacing.screenHorizontal)
+            .padding(.top, DesignSpacing.screenHorizontal)
             
             // Split Method Toggle
-            HStack(spacing: 12) {
+            HStack(spacing: DesignSpacing.related) {
                 SplitMethodButton(
                     title: "Shares",
                     isSelected: splitMethod == .shares
@@ -223,19 +223,19 @@ struct SplitBreakdownView: View {
                     viewModel.calculateWeightedSplitByPercentage()
                 }
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 24)
+            .padding(.horizontal, DesignSpacing.screenHorizontal)
+            .padding(.top, DesignSpacing.section)
             
             // Instruction Text
             Text(splitMethod == .shares ? "Tap +/- to adjust shares" : "Adjust percentages")
                 .font(.caption)
                 .foregroundColor(AppColors.secondaryText)
-                .padding(.top, 8)
-                .padding(.horizontal, 20)
+                .padding(.top, DesignSpacing.listRowCompact)
+                .padding(.horizontal, DesignSpacing.screenHorizontal)
             
             // People List
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: DesignSpacing.subsection) {
                     ForEach(viewModel.people) { person in
                         PersonCard(
                             person: person,
@@ -250,8 +250,8 @@ struct SplitBreakdownView: View {
                         )
                     }
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 24)
+                .padding(.horizontal, DesignSpacing.screenHorizontal)
+                .padding(.top, DesignSpacing.section)
             }
             
             Spacer()
@@ -261,7 +261,7 @@ struct SplitBreakdownView: View {
                 viewModel.startNewSplit()
                 dismiss()
             }) {
-                HStack(spacing: 8) {
+                HStack(spacing: DesignSpacing.compact) {
                     Image(systemName: "arrow.clockwise")
                         .font(.caption)
                     Text("Start New Split")
@@ -269,13 +269,13 @@ struct SplitBreakdownView: View {
                 }
                 .foregroundColor(AppColors.secondaryText)
             }
-            .padding(.bottom, 8)
+            .padding(.bottom, DesignSpacing.listRowCompact)
             
             // Done Button
             Button(action: {
                 dismiss()
             }) {
-                HStack(spacing: 8) {
+                HStack(spacing: DesignSpacing.compact) {
                     Image(systemName: "checkmark")
                         .font(.headline)
                     Text("Done")
@@ -283,12 +283,12 @@ struct SplitBreakdownView: View {
                 }
                 .foregroundColor(AppColors.buttonText)
                 .frame(maxWidth: .infinity)
-                .frame(height: 56)
+                .frame(height: DesignRadius.primaryButtonHeight)
                 .background(AppColors.buttonBackground)
-                .cornerRadius(16)
+                .clipShape(Capsule(style: .continuous))
             }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 32)
+            .padding(.horizontal, DesignSpacing.screenHorizontal)
+            .padding(.bottom, DesignSpacing.screenBottom)
         }
         .onAppear {
             // Calculate initial split
@@ -355,9 +355,9 @@ struct SplitMethodButton: View {
                 .fontWeight(.medium)
                 .foregroundColor(isSelected ? AppColors.buttonText : AppColors.primaryText)
                 .frame(maxWidth: .infinity)
-                .frame(height: 40)
+                .frame(height: DesignLayout.breakdownMethodRowHeight)
                 .background(isSelected ? AppColors.buttonBackground : AppColors.cardBackground)
-                .cornerRadius(8)
+                .clipShape(RoundedRectangle(cornerRadius: DesignRadius.breakdownCompact, style: .continuous))
         }
     }
 }
@@ -370,18 +370,18 @@ struct PersonCard: View {
     let onPercentageChange: (Double) -> Void
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: DesignSpacing.subsection) {
             // First Row: Avatar + Name on left, Amount on right
             HStack {
-                HStack(spacing: 12) {
+                HStack(spacing: DesignSpacing.related) {
                     // Avatar
                     Circle()
                         .fill(person.name == "You" ? AppColors.greenIcon : AppColors.purpleIcon)
-                        .frame(width: 44, height: 44)
+                        .frame(width: DesignLayout.touchTarget, height: DesignLayout.touchTarget)
                         .overlay(
                             Image(systemName: "person.fill")
-                                .foregroundColor(.white)
-                                .font(.system(size: 20))
+                                .foregroundColor(AppColors.buttonText)
+                                .font(DesignTypography.weightStepperGlyph)
                         )
                     
                     // Name
@@ -394,7 +394,7 @@ struct PersonCard: View {
                 
                 // Amount
                 Text(String(format: "%@%.2f", currency.symbol, person.amount))
-                    .font(.title3)
+                    .font(DesignTypography.cardInlineIcon)
                     .fontWeight(.semibold)
                     .foregroundColor(AppColors.primaryText)
             }
@@ -413,12 +413,12 @@ struct PersonCard: View {
                     .font(.subheadline)
                     .fontWeight(.semibold)
                     .foregroundColor(AppColors.primaryText)
-                    .frame(minWidth: 40)
+                    .frame(minWidth: DesignLayout.breakdownValueMinWidth)
                 
                 Spacer()
                 
                 // Adjustment Buttons
-                HStack(spacing: 12) {
+                HStack(spacing: DesignSpacing.related) {
                     Button(action: {
                         if splitMethod == .shares {
                             onSharesChange(-1)
@@ -429,9 +429,9 @@ struct PersonCard: View {
                         Image(systemName: "minus")
                             .font(.headline)
                             .foregroundColor(AppColors.primaryText)
-                            .frame(width: 36, height: 36)
-                            .background((person.name == "You" ? AppColors.greenIcon : AppColors.purpleIcon).opacity(0.3))
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .frame(width: DesignLayout.breakdownStepper, height: DesignLayout.breakdownStepper)
+                            .background((person.name == "You" ? AppColors.greenIcon : AppColors.purpleIcon).opacity(DesignOpacity.avatarBadge))
+                            .clipShape(RoundedRectangle(cornerRadius: DesignRadius.breakdownCompact, style: .continuous))
                     }
                     
                     Button(action: {
@@ -444,19 +444,19 @@ struct PersonCard: View {
                         Image(systemName: "plus")
                             .font(.headline)
                             .foregroundColor(AppColors.primaryText)
-                            .frame(width: 36, height: 36)
-                            .background((person.name == "You" ? AppColors.greenIcon : AppColors.purpleIcon).opacity(0.3))
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .frame(width: DesignLayout.breakdownStepper, height: DesignLayout.breakdownStepper)
+                            .background((person.name == "You" ? AppColors.greenIcon : AppColors.purpleIcon).opacity(DesignOpacity.avatarBadge))
+                            .clipShape(RoundedRectangle(cornerRadius: DesignRadius.breakdownCompact, style: .continuous))
                     }
                 }
             }
         }
-        .padding()
+        .padding(DesignSpacing.insetDefault)
         .background(AppColors.cardBackground)
-        .cornerRadius(16)
+        .clipShape(RoundedRectangle(cornerRadius: DesignRadius.card, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+            RoundedRectangle(cornerRadius: DesignRadius.card, style: .continuous)
+                .stroke(AppColors.borderSubtle, lineWidth: DesignStroke.hairline)
         )
     }
 }
@@ -467,15 +467,15 @@ struct EvenSplitPersonCard: View {
     let perPersonAmount: Double
     
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: DesignSpacing.related) {
             // Avatar
             Circle()
                 .fill(person.name == "You" ? AppColors.greenIcon : AppColors.purpleIcon)
-                .frame(width: 44, height: 44)
+                .frame(width: DesignLayout.touchTarget, height: DesignLayout.touchTarget)
                 .overlay(
                     Image(systemName: "person.fill")
-                        .foregroundColor(.white)
-                        .font(.system(size: 20))
+                        .foregroundColor(AppColors.buttonText)
+                        .font(DesignTypography.weightStepperGlyph)
                 )
             
             // Name
@@ -487,16 +487,16 @@ struct EvenSplitPersonCard: View {
             
             // Amount (read-only)
             Text(String(format: "%@%.2f", currency.symbol, perPersonAmount))
-                .font(.title3)
+                .font(DesignTypography.cardInlineIcon)
                 .fontWeight(.semibold)
                 .foregroundColor(AppColors.primaryText)
         }
-        .padding()
+        .padding(DesignSpacing.insetDefault)
         .background(AppColors.cardBackground)
-        .cornerRadius(16)
+        .clipShape(RoundedRectangle(cornerRadius: DesignRadius.card, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+            RoundedRectangle(cornerRadius: DesignRadius.card, style: .continuous)
+                .stroke(AppColors.borderSubtle, lineWidth: DesignStroke.hairline)
         )
     }
 }

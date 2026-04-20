@@ -20,7 +20,7 @@ struct DashboardPagerView: View {
             TipDashboardView(viewModel: splitViewModel, pagerSelectedPage: $selectedPage)
                 .tag(1)
         }
-        .background(AppColors.darkBackground)
+        .background(DashboardCanvasBackground())
         .tabViewStyle(.page(indexDisplayMode: .never))
         .onChange(of: selectedPage) { _, _ in
             selectionFeedback.prepare()

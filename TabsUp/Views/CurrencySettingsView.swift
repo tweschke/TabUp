@@ -10,34 +10,60 @@ import SwiftUI
 struct CurrencySettingsView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: SplitViewModel
-    
+    @AppStorage(AppAppearance.storageKey) private var appearanceRawValue: String = AppAppearance.system.rawValue
+
     var body: some View {
         NavigationView {
             ZStack {
-                AppColors.darkBackground
+                AppColors.primaryBackground
                     .ignoresSafeArea()
-                
-                VStack(alignment: .leading, spacing: 0) {
-                    // CURRENCY Section Header
-                    Text("CURRENCY")
-                        .font(.caption)
-                        .foregroundColor(AppColors.secondaryText)
-                        .padding(.horizontal, 20)
-                        .padding(.top, 20)
-                        .padding(.bottom, 8)
-                    
-                    // Currency List
+
+                VStack(alignment: .leading, spacing: DesignSpacing.stackFlush) {
                     List {
-                        ForEach(Currency.allCurrencies) { currency in
-                            CurrencyRow(
-                                currency: currency,
-                                isSelected: viewModel.selectedCurrency.id == currency.id,
-                                onSelect: {
-                                    viewModel.setCurrency(currency)
+                        Section {
+                            ForEach(AppAppearance.allCases) { mode in
+                                Button {
+                                    appearanceRawValue = mode.rawValue
+                                } label: {
+                                    HStack {
+                                        Text(mode.displayName)
+                                            .font(.body)
+                                            .foregroundColor(AppColors.primaryText)
+                                        Spacer()
+                                        if appearanceRawValue == mode.rawValue {
+                                            Image(systemName: "checkmark")
+                                                .font(.body.weight(.semibold))
+                                                .foregroundColor(AppColors.greenIcon)
+                                        }
+                                    }
+                                    .padding(.vertical, DesignSpacing.tight)
                                 }
-                            )
-                            .listRowBackground(AppColors.cardBackground)
-                            .listRowSeparator(.hidden)
+                                .buttonStyle(.plain)
+                                .listRowBackground(AppColors.cardBackground)
+                                .listRowSeparator(.hidden)
+                            }
+                        } header: {
+                            Text("APPEARANCE")
+                                .font(.caption)
+                                .foregroundColor(AppColors.secondaryText)
+                        }
+
+                        Section {
+                            ForEach(Currency.allCurrencies) { currency in
+                                CurrencyRow(
+                                    currency: currency,
+                                    isSelected: viewModel.selectedCurrency.id == currency.id,
+                                    onSelect: {
+                                        viewModel.setCurrency(currency)
+                                    }
+                                )
+                                .listRowBackground(AppColors.cardBackground)
+                                .listRowSeparator(.hidden)
+                            }
+                        } header: {
+                            Text("CURRENCY")
+                                .font(.caption)
+                                .foregroundColor(AppColors.secondaryText)
                         }
                     }
                     .listStyle(.plain)
@@ -64,34 +90,34 @@ struct CurrencyRow: View {
     let currency: Currency
     let isSelected: Bool
     let onSelect: () -> Void
-    
+
     var body: some View {
         Button(action: onSelect) {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: DesignSpacing.tight) {
                     Text(currency.name)
                         .font(.body)
                         .foregroundColor(AppColors.primaryText)
-                    
+
                     Text(currency.code)
                         .font(.caption)
                         .foregroundColor(AppColors.secondaryText)
                 }
-                
+
                 Spacer()
-                
-                HStack(spacing: 12) {
+
+                HStack(spacing: DesignSpacing.related) {
                     Text(currency.symbol)
                         .font(.body)
                         .foregroundColor(AppColors.greenIcon)
-                    
+
                     Toggle("", isOn: .constant(isSelected))
                         .toggleStyle(SwitchToggleStyle(tint: AppColors.greenIcon))
                         .labelsHidden()
                         .disabled(true)
                 }
             }
-            .padding(.vertical, 8)
+            .padding(.vertical, DesignSpacing.listRowCompact)
         }
         .buttonStyle(.plain)
     }
